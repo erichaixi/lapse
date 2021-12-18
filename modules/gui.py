@@ -12,7 +12,7 @@ class GUI:
         res = {}
 
         # Check input folder
-        res['input folder'] = self.entry_input_folder.get().strip()
+        res['input folder'] = self.input_dir_entry.get().strip()
         if not os.path.exists(res['input folder']):
             messagebox.showerror("Error", f'Input folder does not exist: "{res["input folder"]}"')
             return False
@@ -21,16 +21,16 @@ class GUI:
             return False
 
         # Check output folder
-        res['output folder'] = self.entry_output_folder.get().strip()
+        res['output folder'] = self.output_dir_entry.get().strip()
         if not os.path.exists(res['output folder']):
             messagebox.showerror("Error", f'Output folder does not exist: "{res["output folder"]}"')
             return False
 
         # Check video length
         try:
-            res['length'] = (float)(self.entry_video_length.get().strip())
+            res['length'] = (float)(self.video_length_entry.get().strip())
         except ValueError:
-            messagebox.showerror("Error", f'Video length must be a number: "{self.entry_video_length.get().strip()}"')
+            messagebox.showerror("Error", f'Video length must be a number: "{self.video_length_entry.get().strip()}"')
             return False
         if res['length'] <= 0:
             messagebox.showerror("Error", f'Video length must be a positive number: "{res["length"]}"')
@@ -76,8 +76,8 @@ class GUI:
         else:
             self.logger.debug("User chose not to create time lapse")
 
-    def click_button_input_folder(self):
-        self.logger.debug("Click self.button_input_folder")
+    def clicked_input_dir_button(self):
+        self.logger.debug("Click self.input_dir_button")
 
         if 'input folder' in self.cfg:
             folder = filedialog.askdirectory(initialdir=self.cfg['input folder'])
@@ -86,8 +86,8 @@ class GUI:
         
         self.logger.debug("Selected input folder: \"{folder}\"")
         if folder:
-            self.entry_input_folder.delete(0, tk.END)
-            self.entry_input_folder.insert(0, folder)
+            self.input_dir_entry.delete(0, tk.END)
+            self.input_dir_entry.insert(0, folder)
             self.cfg['input folder'] = folder
 
             self.logger.debug("Set input folder")
@@ -96,8 +96,8 @@ class GUI:
                 # display error notification
                 pass
 
-    def click_button_output_folder(self):
-        self.logger.debug("Click self.button_output_folder")
+    def clicked_output_dir_button(self):
+        self.logger.debug("Click self.output_dir_button")
         
         if 'output folder' in self.cfg:
             folder = filedialog.askdirectory(initialdir=self.cfg['output folder'])
@@ -106,8 +106,8 @@ class GUI:
 
         self.logger.debug("Selected output folder: \"{folder}\"")
         if folder:
-            self.entry_output_folder.delete(0, tk.END)
-            self.entry_output_folder.insert(0, folder)
+            self.output_dir_entry.delete(0, tk.END)
+            self.output_dir_entry.insert(0, folder)
             self.cfg['output folder'] = folder
 
             self.logger.debug("Set output folder")
@@ -121,14 +121,14 @@ class GUI:
         self.root.title("Time Lapse Creator")
 
         # Input/Output folders
-        self.top_frame = tk.Frame(self.root)
-        self.init_input_output_folders(self.top_frame)
+        top_frame = tk.Frame(self.root)
+        self.init_input_output_folders(top_frame)
 
         # Time Lapse options
-        self.time_lapse_options_frame = tk.LabelFrame(
+        time_lapse_options_frame = tk.LabelFrame(
             self.root,
             text="Time Lapse Options")
-        self.init_time_lapse_options(self.time_lapse_options_frame)
+        self.init_time_lapse_options(time_lapse_options_frame)
 
         # Create Time Lapse button
         self.button_run = tk.Button(self.root, text="Create Time Lapse", command=self.click_button_run)
@@ -138,57 +138,57 @@ class GUI:
 
     def init_input_output_folders(self, container):
         ## Input folder
-        self.frame_0_0 = tk.Frame(container)
-        self.frame_0_0.grid(row=0, column=0)
-        self.label_0_0 = tk.Label(self.frame_0_0, text="Input Folder:", anchor='w')
-        self.label_0_0.pack()
+        frame_input_dir_label = tk.Frame(container)
+        frame_input_dir_label.grid(row=0, column=0)
+        input_dir_label = tk.Label(frame_input_dir_label, text="Input Folder:", anchor='w')
+        input_dir_label.pack()
 
-        self.frame_0_1 = tk.Frame(container)
-        self.frame_0_1.grid(row=0, column=1)
-        self.entry_input_folder = tk.Entry(self.frame_0_1, width=40)
+        frame_input_dir_entry = tk.Frame(container)
+        frame_input_dir_entry.grid(row=0, column=1)
+        self.input_dir_entry = tk.Entry(frame_input_dir_entry, width=40)
         if 'input folder' in self.cfg:
-            self.entry_input_folder.insert(0, self.cfg['input folder'])
-        self.entry_input_folder.pack()
+            self.input_dir_entry.insert(0, self.cfg['input folder'])
+        self.input_dir_entry.pack()
 
-        self.frame_0_2 = tk.Frame(container)
-        self.frame_0_2.grid(row=0, column=2)
-        self.button_input_folder = tk.Button(self.frame_0_2, text="Browse", command=self.click_button_input_folder)
-        self.button_input_folder.pack()
+        frame_input_dir_button = tk.Frame(container)
+        frame_input_dir_button.grid(row=0, column=2)
+        self.input_dir_button = tk.Button(frame_input_dir_button, text="Browse", command=self.clicked_input_dir_button)
+        self.input_dir_button.pack()
 
         ## Output folder
-        self.frame_1_0 = tk.Frame(container)
-        self.frame_1_0.grid(row=1, column=0)
-        self.label_1_0 = tk.Label(self.frame_1_0, text="Output Folder:", anchor='w')
-        self.label_1_0.pack()
+        frame_output_dir_label = tk.Frame(container)
+        frame_output_dir_label.grid(row=1, column=0)
+        output_dir_label = tk.Label(frame_output_dir_label, text="Output Folder:", anchor='w')
+        output_dir_label.pack()
 
-        self.frame_1_1 = tk.Frame(container)
-        self.frame_1_1.grid(row=1, column=1)
-        self.entry_output_folder = tk.Entry(self.frame_1_1, width=40)
+        frame_output_dir_entry = tk.Frame(container)
+        frame_output_dir_entry.grid(row=1, column=1)
+        self.output_dir_entry = tk.Entry(frame_output_dir_entry, width=40)
         if 'output folder' in self.cfg:
-            self.entry_output_folder.insert(0, self.cfg['output folder'])
-        self.entry_output_folder.pack()
+            self.output_dir_entry.insert(0, self.cfg['output folder'])
+        self.output_dir_entry.pack()
 
-        self.frame_1_2 = tk.Frame(container)
-        self.frame_1_2.grid(row=1, column=2)
-        self.button_output_folder = tk.Button(self.frame_1_2, text="Browse", command=self.click_button_output_folder)
-        self.button_output_folder.pack()
+        frame_output_dir_button = tk.Frame(container)
+        frame_output_dir_button.grid(row=1, column=2)
+        self.output_dir_button = tk.Button(frame_output_dir_button, text="Browse", command=self.clicked_output_dir_button)
+        self.output_dir_button.pack()
 
         container.pack()
 
     def init_time_lapse_options(self, container):
         # Video duration
-        self.frame_3_0 = tk.Frame(container)
-        self.frame_3_0.grid(row=0, column=0)
-        self.label_3_0 = tk.Label(
-            self.frame_3_0,
+        frame_video_length_label = tk.Frame(container)
+        frame_video_length_label.grid(row=0, column=0)
+        video_length_label = tk.Label(
+            frame_video_length_label,
             text="Video Length (sec):",
             anchor='w')
-        self.label_3_0.pack()
+        video_length_label.pack()
 
-        self.frame_3_1 = tk.Frame(container)
-        self.frame_3_1.grid(row=0, column=1)
-        self.entry_video_length = tk.Entry(self.frame_3_1, width=5)
-        self.entry_video_length.pack()
+        frame_video_length_entry = tk.Frame(container)
+        frame_video_length_entry.grid(row=0, column=1)
+        self.video_length_entry = tk.Entry(frame_video_length_entry, width=5)
+        self.video_length_entry.pack()
 
         # TODO: FPS
 
