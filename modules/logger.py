@@ -4,14 +4,16 @@ import os
 import sys
 
 class Logger:
-    def __init__(self):
+    def __init__(self, debug=False):
         if not os.path.isdir("logs"):
             os.mkdir("logs")
 
         self.logger = logging.getLogger()
         self.logger.addHandler(logging.StreamHandler(sys.stdout))
-        # logger.setLevel(logging.WARNING)
-        self.logger.setLevel(logging.DEBUG)
+
+        self.logger.setLevel(logging.WARNING)
+        if (debug):
+            self.logger.setLevel(logging.DEBUG)
 
         handler = logging.handlers.RotatingFileHandler(
             "logs/log", maxBytes=(1048576*5), backupCount=0
