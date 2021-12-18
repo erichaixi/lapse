@@ -36,6 +36,25 @@ class GUI:
             messagebox.showerror("Error", f'Video length must be a positive number: "{res["length"]}"')
             return False
 
+        # Check video dimension
+        try:
+            res['output width'] = (int)(self.video_w_entry.get().strip())
+        except ValueError:
+            messagebox.showerror("Error", f'Video width must be an integer: "{self.video_w_entry.get().strip()}"')
+            return False
+        if res['output width'] <= 0:
+            messagebox.showerror("Error", f"Video width must be a positive number")
+            return False
+
+        try:
+            res['output height'] = (int)(self.video_h_entry.get().strip())
+        except ValueError:
+            messagebox.showerror("Error", f'Video height must be an integer: "{self.video_h_entry.get().strip()}"')
+            return False
+        if res['output height'] <= 0:
+            messagebox.showerror("Error", f"Video height must be a positive number")
+            return False
+
         return Config(res)
 
     def create_time_lapse_message(self, cfg):
@@ -45,6 +64,8 @@ class GUI:
         FPS:
         Resolution:
         '''
+        self.logger.debug(f"Create time lapse message using: {cfg}")
+
         message = "Create with the following settings?\n\n"
 
         num_photos = len(glob.glob(cfg['input folder'] + "/*"))
@@ -55,7 +76,7 @@ class GUI:
         fps = round(num_photos / cfg['length'], 2)
         message += f"FPS: {fps}\n"
 
-        message += "Resolution: 1920 x 1080"
+        message += f"Resolution: {cfg['output width']} x {cfg['output height']}"
 
         return message
 
@@ -134,8 +155,6 @@ class GUI:
         self.button_run = tk.Button(self.root, text="Create Time Lapse", command=self.click_button_run)
         self.button_run.pack()
 
-        self.root.mainloop()
-
     def init_input_output_folders(self, container):
         ## Input folder
         frame_input_dir_label = tk.Frame(container)
@@ -206,6 +225,19 @@ class GUI:
         self.video_w_entry = tk.Entry(frame_video_w_entry, width=5)
         self.video_w_entry.pack()
 
+        frame_video_h_label = tk.Frame(container)
+        frame_video_h_label.grid(row=2, column=0)
+        video_h_label = tk.Label(
+            frame_video_h_label,
+            text="Video Height (px):",
+            anchor='w')
+        video_h_label.pack()
+
+        frame_video_h_entry = tk.Frame(container)
+        frame_video_h_entry.grid(row=2, column=1)
+        self.video_h_entry = tk.Entry(frame_video_h_entry, width=5)
+        self.video_h_entry.pack()
+
         container.pack(fill="both", expand="yes")
 
     def __init__(self, logger):
@@ -213,3 +245,4 @@ class GUI:
         self.cfg_manager = ConfigManager(self.logger)
         self.cfg = self.cfg_manager.load()
         self.init_grid()
+        self.root.mainloop()

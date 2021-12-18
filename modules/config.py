@@ -21,8 +21,8 @@ class Config:
         dt_string = currDatetime.strftime("%d-%m-%Y %H-%M-%S")
         self.d['output file'] = dt_string
 
-        self.d['output height'] = 1080
-        self.d['output width'] = 1920
+        # self.d['output height'] = 1080
+        # self.d['output width'] = 1920
 
         # Confirm all slots are filled
         for slot in self.slots:
