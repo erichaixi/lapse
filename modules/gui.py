@@ -164,8 +164,8 @@ class GUI:
         self.root = tk.Tk()
         self.root.title("Time Lapse Creator")
 
-        default_font = tk.font.nametofont("TkDefaultFont")
-        default_font.configure(size=24)
+        tk.font.nametofont("TkDefaultFont").configure(size=24)
+        tk.font.nametofont("TkTextFont").configure(size=24)
 
         # Input/Output folders
         io_selection_frame = tk.LabelFrame(
