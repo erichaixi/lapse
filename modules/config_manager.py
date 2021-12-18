@@ -1,8 +1,13 @@
 from .config import Config
 
+from enum import Enum
 import json
 import os
 import sys
+
+class ConfigError(Enum):
+    INVALID_DIR = 1
+    LOAD_FAILED = 2
 
 class ConfigManager:
     path_cfg = "cfg.cfg"
@@ -20,10 +25,10 @@ class ConfigManager:
                     return cfg
             except Exception as e:
                 self.logger.error(f"Failed to load config: {e}")
-                return {}
+                return ConfigError.LOAD_FAILED
         else:
             self.logger.debug(f"No existing config")
-            return {}
+            return ConfigError.INVALID_DIR
 
     def save(self, cfg):
         try:

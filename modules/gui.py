@@ -1,8 +1,10 @@
 from .config_manager import ConfigManager
 from .config import Config
 from .time_lapse_creator import TimeLapseCreator
+from .utils import get_photos_in_folder
 
 import tkinter as tk
+import tkinter.font
 from tkinter import filedialog, messagebox
 import os
 import glob
@@ -107,11 +109,11 @@ class GUI:
         
         self.logger.debug("Selected input folder: \"{folder}\"")
         if folder:
-            self.input_dir_entry.delete(0, tk.END)
-            self.input_dir_entry.insert(0, folder)
+            self.update_num_photo_counter(folder)
+            self.input_dir_entry.config(text=folder)
             self.cfg['input folder'] = folder
 
-            self.logger.debug("Set input folder")
+            self.logger.debug(f"Set input folder={folder}")
 
             if not self.cfg_manager.save(self.cfg):
                 # display error notification
@@ -127,23 +129,49 @@ class GUI:
 
         self.logger.debug("Selected output folder: \"{folder}\"")
         if folder:
-            self.output_dir_entry.delete(0, tk.END)
-            self.output_dir_entry.insert(0, folder)
+            self.output_dir_entry.config(text=folder)
+
             self.cfg['output folder'] = folder
 
-            self.logger.debug("Set output folder")
+            self.logger.debug(f"Set output folder={folder}")
 
             if not self.cfg_manager.save(self.cfg):
                 # display error notification
                 pass
 
+    def show_io_notification(self, message):
+        self.io_notification_label.config(text=message)
+        self.io_notification_label.pack()
+
+    def hide_io_notification(self):
+        self.io_notification_label.pack_forget()
+        self.io_notification_label.config(text='')
+
+    def update_num_photo_counter(self, folder=None):
+        DEFAULT_STATEMENT = "# of images in input folder: "
+        if folder:
+            photos = get_photos_in_folder(folder)
+            num_photos = len(photos)
+            self.num_photos_counter_label.config(
+                text=f"{DEFAULT_STATEMENT}{num_photos}"
+            )
+        else:
+            self.num_photos_counter_label.config(
+                text=f"{DEFAULT_STATEMENT}-"
+            )
+
     def init_grid(self):
         self.root = tk.Tk()
         self.root.title("Time Lapse Creator")
 
+        default_font = tk.font.nametofont("TkDefaultFont")
+        default_font.configure(size=24)
+
         # Input/Output folders
-        top_frame = tk.Frame(self.root)
-        self.init_input_output_folders(top_frame)
+        io_selection_frame = tk.LabelFrame(
+            self.root,
+            text="Input/Output Selection")
+        self.init_input_output_folders(io_selection_frame)
 
         # Time Lapse options
         time_lapse_options_frame = tk.LabelFrame(
@@ -159,14 +187,23 @@ class GUI:
         ## Input folder
         frame_input_dir_label = tk.Frame(container)
         frame_input_dir_label.grid(row=0, column=0)
-        input_dir_label = tk.Label(frame_input_dir_label, text="Input Folder:", anchor='w')
+        input_dir_label = tk.Label(
+            frame_input_dir_label,
+            text="Input Folder:",
+            anchor='w',
+            width=13)
         input_dir_label.pack()
 
         frame_input_dir_entry = tk.Frame(container)
         frame_input_dir_entry.grid(row=0, column=1)
-        self.input_dir_entry = tk.Entry(frame_input_dir_entry, width=40)
+        self.input_dir_entry = tk.Label(
+            frame_input_dir_entry,
+            width=40,
+            anchor='e',
+            borderwidth=2,
+            relief="groove")
         if 'input folder' in self.cfg:
-            self.input_dir_entry.insert(0, self.cfg['input folder'])
+            self.input_dir_entry.config(text=self.cfg['input folder'])
         self.input_dir_entry.pack()
 
         frame_input_dir_button = tk.Frame(container)
@@ -174,23 +211,51 @@ class GUI:
         self.input_dir_button = tk.Button(frame_input_dir_button, text="Browse", command=self.clicked_input_dir_button)
         self.input_dir_button.pack()
 
+        # Num photos counter
+        frame_num_photos_counter_label = tk.Frame(container)
+        frame_num_photos_counter_label.grid(row=1, column=1)
+        self.num_photos_counter_label = tk.Label(
+            frame_num_photos_counter_label,
+            anchor='w',
+            width=40
+        )
+        if 'input folder' in self.cfg:
+            self.update_num_photo_counter(self.cfg['input folder'])
+        else:
+            self.update_num_photo_counter()
+        self.num_photos_counter_label.pack()
+
         ## Output folder
         frame_output_dir_label = tk.Frame(container)
-        frame_output_dir_label.grid(row=1, column=0)
-        output_dir_label = tk.Label(frame_output_dir_label, text="Output Folder:", anchor='w')
+        frame_output_dir_label.grid(row=2, column=0)
+        output_dir_label = tk.Label(
+            frame_output_dir_label,
+            text="Output Folder:",
+            anchor='w',
+            width=13)
         output_dir_label.pack()
 
         frame_output_dir_entry = tk.Frame(container)
-        frame_output_dir_entry.grid(row=1, column=1)
-        self.output_dir_entry = tk.Entry(frame_output_dir_entry, width=40)
+        frame_output_dir_entry.grid(row=2, column=1)
+        self.output_dir_entry = tk.Label(
+            frame_output_dir_entry,
+            width=40,
+            anchor='e',
+            borderwidth=2,
+            relief="groove")
         if 'output folder' in self.cfg:
-            self.output_dir_entry.insert(0, self.cfg['output folder'])
+            self.output_dir_entry.config(text=self.cfg['output folder'])
         self.output_dir_entry.pack()
 
         frame_output_dir_button = tk.Frame(container)
-        frame_output_dir_button.grid(row=1, column=2)
+        frame_output_dir_button.grid(row=2, column=2)
         self.output_dir_button = tk.Button(frame_output_dir_button, text="Browse", command=self.clicked_output_dir_button)
         self.output_dir_button.pack()
+
+        # Notification row
+        frame_io_notification_label = tk.Frame(container)
+        frame_io_notification_label.grid(row=3, column=1)
+        self.io_notification_label = tk.Label(frame_io_notification_label, anchor='w')
 
         container.pack()
 
