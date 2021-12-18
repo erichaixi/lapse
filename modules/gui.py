@@ -125,8 +125,10 @@ class GUI:
         self.init_input_output_folders(self.top_frame)
 
         # Time Lapse options
-        self.botframe = tk.Frame(self.root)
-        self.init_time_lapse_options(self.botframe)
+        self.time_lapse_options_frame = tk.LabelFrame(
+            self.root,
+            text="Time Lapse Options")
+        self.init_time_lapse_options(self.time_lapse_options_frame)
 
         # Create Time Lapse button
         self.button_run = tk.Button(self.root, text="Create Time Lapse", command=self.click_button_run)
@@ -174,9 +176,13 @@ class GUI:
         container.pack()
 
     def init_time_lapse_options(self, container):
+        # Video duration
         self.frame_3_0 = tk.Frame(container)
         self.frame_3_0.grid(row=0, column=0)
-        self.label_3_0 = tk.Label(self.frame_3_0, text="Video Length (sec):", anchor='w')
+        self.label_3_0 = tk.Label(
+            self.frame_3_0,
+            text="Video Length (sec):",
+            anchor='w')
         self.label_3_0.pack()
 
         self.frame_3_1 = tk.Frame(container)
@@ -184,7 +190,23 @@ class GUI:
         self.entry_video_length = tk.Entry(self.frame_3_1, width=5)
         self.entry_video_length.pack()
 
-        container.pack()
+        # TODO: FPS
+
+        # Dimensions
+        frame_video_w_label = tk.Frame(container)
+        frame_video_w_label.grid(row=1, column=0)
+        video_w_label = tk.Label(
+            frame_video_w_label,
+            text="Video Width (px):",
+            anchor='w')
+        video_w_label.pack()
+
+        frame_video_w_entry = tk.Frame(container)
+        frame_video_w_entry.grid(row=1, column=1)
+        self.video_w_entry = tk.Entry(frame_video_w_entry, width=5)
+        self.video_w_entry.pack()
+
+        container.pack(fill="both", expand="yes")
 
     def __init__(self, logger):
         self.logger = logger
