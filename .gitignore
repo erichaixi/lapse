@@ -3,3 +3,4 @@ output/
 logs/
 *.cfg
 Design.md
+__pycache__

@@ -120,72 +120,71 @@ class GUI:
         self.root = tk.Tk()
         self.root.title("Time Lapse Creator")
 
-        # Top Frame
-        self.topframe = tk.Frame(self.root)
+        # Input/Output folders
+        self.top_frame = tk.Frame(self.root)
+        self.init_input_output_folders(self.top_frame)
 
+        # Time Lapse options
+        self.botframe = tk.Frame(self.root)
+        self.init_time_lapse_options(self.botframe)
+
+        # Create Time Lapse button
+        self.button_run = tk.Button(self.root, text="Create Time Lapse", command=self.click_button_run)
+        self.button_run.pack()
+
+        self.root.mainloop()
+
+    def init_input_output_folders(self, container):
         ## Input folder
-        self.frame_0_0 = tk.Frame(self.topframe)
+        self.frame_0_0 = tk.Frame(container)
         self.frame_0_0.grid(row=0, column=0)
         self.label_0_0 = tk.Label(self.frame_0_0, text="Input Folder:", anchor='w')
         self.label_0_0.pack()
 
-        self.frame_0_1 = tk.Frame(self.topframe)
+        self.frame_0_1 = tk.Frame(container)
         self.frame_0_1.grid(row=0, column=1)
         self.entry_input_folder = tk.Entry(self.frame_0_1, width=40)
         if 'input folder' in self.cfg:
             self.entry_input_folder.insert(0, self.cfg['input folder'])
         self.entry_input_folder.pack()
 
-        self.frame_0_2 = tk.Frame(self.topframe)
+        self.frame_0_2 = tk.Frame(container)
         self.frame_0_2.grid(row=0, column=2)
         self.button_input_folder = tk.Button(self.frame_0_2, text="Browse", command=self.click_button_input_folder)
         self.button_input_folder.pack()
 
         ## Output folder
-        self.frame_1_0 = tk.Frame(self.topframe)
+        self.frame_1_0 = tk.Frame(container)
         self.frame_1_0.grid(row=1, column=0)
         self.label_1_0 = tk.Label(self.frame_1_0, text="Output Folder:", anchor='w')
         self.label_1_0.pack()
 
-        self.frame_1_1 = tk.Frame(self.topframe)
+        self.frame_1_1 = tk.Frame(container)
         self.frame_1_1.grid(row=1, column=1)
         self.entry_output_folder = tk.Entry(self.frame_1_1, width=40)
         if 'output folder' in self.cfg:
             self.entry_output_folder.insert(0, self.cfg['output folder'])
         self.entry_output_folder.pack()
 
-        self.frame_1_2 = tk.Frame(self.topframe)
+        self.frame_1_2 = tk.Frame(container)
         self.frame_1_2.grid(row=1, column=2)
         self.button_output_folder = tk.Button(self.frame_1_2, text="Browse", command=self.click_button_output_folder)
         self.button_output_folder.pack()
 
-        self.topframe.pack()
+        container.pack()
 
-
-
-        # Bot Frame
-        self.botframe = tk.Frame(self.root)
-
-        ## Video length
-        self.frame_3_0 = tk.Frame(self.botframe)
+    def init_time_lapse_options(self, container):
+        self.frame_3_0 = tk.Frame(container)
         self.frame_3_0.grid(row=0, column=0)
         self.label_3_0 = tk.Label(self.frame_3_0, text="Video Length (sec):", anchor='w')
         self.label_3_0.pack()
 
-        self.frame_3_1 = tk.Frame(self.botframe)
+        self.frame_3_1 = tk.Frame(container)
         self.frame_3_1.grid(row=0, column=1)
         self.entry_video_length = tk.Entry(self.frame_3_1, width=5)
         self.entry_video_length.pack()
 
-        self.botframe.pack()
-
-        # Run self.button
-        self.button_run = tk.Button(self.root, text="Create Time Lapse", command=self.click_button_run)
-        self.button_run.pack()
-
-        self.root.mainloop()
-
-    
+        container.pack()
 
     def __init__(self, logger):
         self.logger = logger
