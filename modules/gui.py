@@ -308,6 +308,7 @@ class GUI:
             validate='key',
             validatecommand = (vcmd_is_int, '%P')
         )
+        self.video_w_entry.insert(0, 1920)
         self.video_w_entry.pack()
 
         frame_video_h_label = tk.Frame(container)
@@ -330,6 +331,7 @@ class GUI:
             validate='key',
             validatecommand = (vcmd_is_int, '%P')
         )
+        self.video_h_entry.insert(0, 1080)
         self.video_h_entry.pack()
 
         container.pack(fill="both", expand="yes")
