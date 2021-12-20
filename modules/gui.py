@@ -252,6 +252,7 @@ class GUI:
             return False
 
     def is_int_callback(self, P):
+
         return P == '' or str.isnumeric(P)
 
     def init_time_lapse_options(self, container):
@@ -262,7 +263,7 @@ class GUI:
         ]
 
         vcmd_is_float = container.register(self.is_float_callback)
-        vcmd_is_int = container.register(self.is_float_callback)
+        vcmd_is_int = container.register(self.is_int_callback)
 
         # Video duration
         frame_video_length_label = tk.Frame(container)
@@ -285,9 +286,6 @@ class GUI:
             validatecommand = (vcmd_is_float, '%P')
         )
         self.video_length_entry.pack()
-
-
-        # TODO: FPS
 
         # Dimensions
         frame_video_w_label = tk.Frame(container)
