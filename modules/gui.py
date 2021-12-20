@@ -241,15 +241,22 @@ class GUI:
 
         container.pack()
 
-    def is_number_callback(self, P):
-        print(P)
-        if str.isnumeric(P) or P == '':
+    def is_float_callback(self, P):
+        try:
+            if P == '' or P == '.':
+                return True
+
+            float(P)
             return True
-        else:
+        except:
             return False
 
+    def is_int_callback(self, P):
+        return P == '' or str.isnumeric(P)
+
     def init_time_lapse_options(self, container):
-        vcmd = container.register(self.is_number_callback)
+        vcmd_is_float = container.register(self.is_float_callback)
+        vcmd_is_int = container.register(self.is_float_callback)
 
         # Video duration
         frame_video_length_label = tk.Frame(container)
@@ -265,7 +272,7 @@ class GUI:
             frame_video_length_entry,
             width=5,
             validate='key',
-            validatecommand = (vcmd, '%P')
+            validatecommand = (vcmd_is_float, '%P')
         )
         self.video_length_entry.pack()
 
@@ -287,7 +294,7 @@ class GUI:
             frame_video_w_entry,
             width=5,
             validate='key',
-            validatecommand = (vcmd, '%P')
+            validatecommand = (vcmd_is_int, '%P')
         )
         self.video_w_entry.pack()
 
@@ -305,7 +312,7 @@ class GUI:
             frame_video_h_entry,
             width=5,
             validate='key',
-            validatecommand = (vcmd, '%P')
+            validatecommand = (vcmd_is_int, '%P')
         )
         self.video_h_entry.pack()
 
