@@ -179,37 +179,6 @@ class GUI:
                 self.photo_preview_container.images.append(img)  # Keep a reference.
                 # self.photo_preview_container.insert('insert', '\n')
 
-    def init_grid(self):
-        self.root = tk.Tk()
-        self.root.title("Time Lapse Creator")
-
-        tk.font.nametofont("TkDefaultFont").configure(size=FONT_SIZE)
-        tk.font.nametofont("TkTextFont").configure(size=FONT_SIZE)
-
-        left_root_frame = tk.Frame(self.root)
-        left_root_frame.pack(side='left')
-        right_root_frame = tk.Frame(self.root)
-        right_root_frame.pack(side='right')
-
-        # Create photo preview
-        self.init_photo_preview(right_root_frame)
-
-        # Input/Output folders
-        io_selection_frame = tk.LabelFrame(
-            left_root_frame,
-            text="Input/Output Selection")
-        self.init_input_output_folders(io_selection_frame)
-
-        # Time Lapse options
-        time_lapse_options_frame = tk.LabelFrame(
-            left_root_frame,
-            text="Time Lapse Options")
-        self.init_time_lapse_options(time_lapse_options_frame)
-
-        # Create Time Lapse button
-        self.button_run = tk.Button(left_root_frame, text="Create Time Lapse", command=self.click_button_run)
-        self.button_run.pack()
-
     def init_input_output_folders(self, container):
         ## Input folder
         frame_input_dir_label = tk.Frame(container)
@@ -275,11 +244,10 @@ class GUI:
     def init_time_lapse_options(self, container):
         # Video duration
         frame_video_length_label = tk.Frame(container)
-        frame_video_length_label.grid(row=0, column=0)
+        frame_video_length_label.grid(row=0, column=0, sticky='w')
         video_length_label = tk.Label(
             frame_video_length_label,
-            text="Video Length (sec):",
-            anchor='w')
+            text="Video Length (sec):",)
         video_length_label.pack()
 
         frame_video_length_entry = tk.Frame(container)
@@ -291,11 +259,11 @@ class GUI:
 
         # Dimensions
         frame_video_w_label = tk.Frame(container)
-        frame_video_w_label.grid(row=1, column=0)
+        frame_video_w_label.grid(row=1, column=0, sticky='w')
         video_w_label = tk.Label(
             frame_video_w_label,
             text="Video Width (px):",
-            anchor='w')
+        )
         video_w_label.pack()
 
         frame_video_w_entry = tk.Frame(container)
@@ -304,11 +272,11 @@ class GUI:
         self.video_w_entry.pack()
 
         frame_video_h_label = tk.Frame(container)
-        frame_video_h_label.grid(row=2, column=0)
+        frame_video_h_label.grid(row=2, column=0, sticky='w')
         video_h_label = tk.Label(
             frame_video_h_label,
             text="Video Height (px):",
-            anchor='w')
+        )
         video_h_label.pack()
 
         frame_video_h_entry = tk.Frame(container)
@@ -325,7 +293,7 @@ class GUI:
             frame_photo_preview_container,
             width=40
         )
-        self.photo_preview_container.pack(side='left', fill='both')
+        self.photo_preview_container.pack(side='top', fill='both')
         self.photo_preview_container.images = []
 
         # Num photos counter
@@ -341,6 +309,39 @@ class GUI:
         else:
             self.update_num_photo_counter()
         self.num_photos_counter_label.pack(fill='x', expand='yes')
+
+    def init_grid(self):
+        self.root = tk.Tk()
+        self.root.title("Time Lapse Creator")
+
+        tk.font.nametofont("TkDefaultFont").configure(size=FONT_SIZE)
+        tk.font.nametofont("TkTextFont").configure(size=FONT_SIZE)
+
+        left_root_frame = tk.Frame(self.root)
+        # left_root_frame.pack(side='left')
+        left_root_frame.grid(row=0, column=0, sticky='nw')
+        right_root_frame = tk.Frame(self.root)
+        # right_root_frame.pack(side='right')
+        right_root_frame.grid(row=0, column=1)
+
+        # Create photo preview
+        self.init_photo_preview(right_root_frame)
+
+        # Input/Output folders
+        io_selection_frame = tk.LabelFrame(
+            left_root_frame,
+            text="Input/Output Selection")
+        self.init_input_output_folders(io_selection_frame)
+
+        # Time Lapse options
+        time_lapse_options_frame = tk.LabelFrame(
+            left_root_frame,
+            text="Time Lapse Options")
+        self.init_time_lapse_options(time_lapse_options_frame)
+
+        # Create Time Lapse button
+        self.button_run = tk.Button(left_root_frame, text="Create Time Lapse", command=self.click_button_run)
+        self.button_run.pack()
 
     def __init__(self, logger):
         self.logger = logger
