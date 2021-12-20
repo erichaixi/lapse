@@ -167,8 +167,13 @@ class GUI:
     def update_photo_preview(self, folder=None):
         self.photo_preview_container.delete(1.0, 'end')
         self.photo_preview_container.images.clear()
+
         if folder:
             photo_paths = get_photos_in_folder(folder)
+            if self.selected_sort_method.get() == "Creation Time":
+                photo_paths = sorted(photo_paths, key=os.path.getctime)
+            else:
+                photo_paths = sorted(photo_paths)
 
             for image_file_path in photo_paths:
                 img = Image.open(image_file_path)
@@ -362,9 +367,38 @@ class GUI:
             self.update_num_photo_counter()
         self.num_photos_counter_label.pack(fill='x', expand='yes')
 
+        # Sort method
+        SORT_METHODS = [
+            "Name",
+            "Creation Time"
+        ]
+
+        frame_sort_method_dropdown = tk.Frame(container)
+        frame_sort_method_dropdown.grid(row=2, column=0, sticky='w')
+        self.sort_method_dropdown = tk.OptionMenu(
+            frame_sort_method_dropdown,
+            self.selected_sort_method,
+            *SORT_METHODS,
+            command=self.sort_method_changed
+        )
+        self.sort_method_dropdown.pack(side='right')
+
+        label_sort_method_dropdown = tk.Label(
+            frame_sort_method_dropdown,
+            text="Sort by:"
+        )
+        label_sort_method_dropdown.pack(side='left')
+
+    def sort_method_changed(self, choice):
+        if 'input folder' in self.cfg:
+            self.update_photo_preview(self.cfg['input folder'])
+
     def init_grid(self):
         self.root = tk.Tk()
         self.root.title("Time Lapse Creator")
+
+        self.selected_sort_method = tk.StringVar()
+        self.selected_sort_method.set("Name")
 
         tk.font.nametofont("TkDefaultFont").configure(size=FONT_SIZE)
         tk.font.nametofont("TkTextFont").configure(size=FONT_SIZE)
