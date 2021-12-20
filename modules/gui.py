@@ -171,7 +171,6 @@ class GUI:
             photo_paths = get_photos_in_folder(folder)
 
             for image_file_path in photo_paths:
-                # img = Image.open(image_file_path).resize((128, 128), Image.ANTIALIAS)
                 img = Image.open(image_file_path)
                 img = ImageOps.fit(img, (128, 128), method = Image.ANTIALIAS,
                    bleed = 0.0, centering =(0.5, 0.5))
@@ -351,7 +350,7 @@ class GUI:
 
         # Num photos counter
         frame_num_photos_counter_label = tk.Frame(container)
-        frame_num_photos_counter_label.grid(row=1, column=0)
+        frame_num_photos_counter_label.grid(row=1, column=0, sticky='w')
         self.num_photos_counter_label = tk.Label(
             frame_num_photos_counter_label,
             anchor='w',
