@@ -241,7 +241,16 @@ class GUI:
 
         container.pack()
 
+    def is_number_callback(self, P):
+        print(P)
+        if str.isnumeric(P) or P == '':
+            return True
+        else:
+            return False
+
     def init_time_lapse_options(self, container):
+        vcmd = container.register(self.is_number_callback)
+
         # Video duration
         frame_video_length_label = tk.Frame(container)
         frame_video_length_label.grid(row=0, column=0, sticky='w')
@@ -252,8 +261,14 @@ class GUI:
 
         frame_video_length_entry = tk.Frame(container)
         frame_video_length_entry.grid(row=0, column=1)
-        self.video_length_entry = tk.Entry(frame_video_length_entry, width=5)
+        self.video_length_entry = tk.Entry(
+            frame_video_length_entry,
+            width=5,
+            validate='key',
+            validatecommand = (vcmd, '%P')
+        )
         self.video_length_entry.pack()
+
 
         # TODO: FPS
 
@@ -268,7 +283,12 @@ class GUI:
 
         frame_video_w_entry = tk.Frame(container)
         frame_video_w_entry.grid(row=1, column=1)
-        self.video_w_entry = tk.Entry(frame_video_w_entry, width=5)
+        self.video_w_entry = tk.Entry(
+            frame_video_w_entry,
+            width=5,
+            validate='key',
+            validatecommand = (vcmd, '%P')
+        )
         self.video_w_entry.pack()
 
         frame_video_h_label = tk.Frame(container)
@@ -281,7 +301,12 @@ class GUI:
 
         frame_video_h_entry = tk.Frame(container)
         frame_video_h_entry.grid(row=2, column=1)
-        self.video_h_entry = tk.Entry(frame_video_h_entry, width=5)
+        self.video_h_entry = tk.Entry(
+            frame_video_h_entry,
+            width=5,
+            validate='key',
+            validatecommand = (vcmd, '%P')
+        )
         self.video_h_entry.pack()
 
         container.pack(fill="both", expand="yes")
