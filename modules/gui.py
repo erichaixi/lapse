@@ -3,9 +3,10 @@ from .config import Config
 from .time_lapse_creator import TimeLapseCreator
 from .utils import get_photos_in_folder
 
+from PIL import Image, ImageTk
 import tkinter as tk
 import tkinter.font
-from tkinter import filedialog, messagebox
+from tkinter import filedialog, messagebox, scrolledtext
 import os
 import glob
 
@@ -150,17 +151,33 @@ class GUI:
         self.io_notification_label.config(text='')
 
     def update_num_photo_counter(self, folder=None):
-        DEFAULT_STATEMENT = "# of images in input folder: "
         if folder:
             photos = get_photos_in_folder(folder)
             num_photos = len(photos)
             self.num_photos_counter_label.config(
-                text=f"{DEFAULT_STATEMENT}{num_photos}"
+                text=f"{num_photos} images"
             )
+
+            self.update_photo_preview(folder)
         else:
             self.num_photos_counter_label.config(
-                text=f"{DEFAULT_STATEMENT}-"
+                text=f"0 images"
             )
+
+    def update_photo_preview(self, folder=None):
+        self.photo_preview_container.delete(1.0, 'end')
+        self.photo_preview_container.images.clear()
+        if folder:
+            photo_paths = get_photos_in_folder(folder)
+
+            for image_file_path in photo_paths:
+                img = Image.open(image_file_path).resize((64, 64), Image.ANTIALIAS)
+                img = ImageTk.PhotoImage(img)
+
+                # self.photo_preview_container.insert('insert', image_file_path+'\n')
+                self.photo_preview_container.image_create('insert', padx=5, pady=5, image=img)
+                self.photo_preview_container.images.append(img)  # Keep a reference.
+                # self.photo_preview_container.insert('insert', '\n')
 
     def init_grid(self):
         self.root = tk.Tk()
@@ -169,20 +186,28 @@ class GUI:
         tk.font.nametofont("TkDefaultFont").configure(size=FONT_SIZE)
         tk.font.nametofont("TkTextFont").configure(size=FONT_SIZE)
 
+        left_root_frame = tk.Frame(self.root)
+        left_root_frame.pack(side='left')
+        right_root_frame = tk.Frame(self.root)
+        right_root_frame.pack(side='right')
+
+        # Create photo preview
+        self.init_photo_preview(right_root_frame)
+
         # Input/Output folders
         io_selection_frame = tk.LabelFrame(
-            self.root,
+            left_root_frame,
             text="Input/Output Selection")
         self.init_input_output_folders(io_selection_frame)
 
         # Time Lapse options
         time_lapse_options_frame = tk.LabelFrame(
-            self.root,
+            left_root_frame,
             text="Time Lapse Options")
         self.init_time_lapse_options(time_lapse_options_frame)
 
         # Create Time Lapse button
-        self.button_run = tk.Button(self.root, text="Create Time Lapse", command=self.click_button_run)
+        self.button_run = tk.Button(left_root_frame, text="Create Time Lapse", command=self.click_button_run)
         self.button_run.pack()
 
     def init_input_output_folders(self, container):
@@ -212,20 +237,6 @@ class GUI:
         frame_input_dir_button.grid(row=0, column=2)
         self.input_dir_button = tk.Button(frame_input_dir_button, text="Browse", command=self.clicked_input_dir_button)
         self.input_dir_button.pack()
-
-        # Num photos counter
-        frame_num_photos_counter_label = tk.Frame(container)
-        frame_num_photos_counter_label.grid(row=1, column=1)
-        self.num_photos_counter_label = tk.Label(
-            frame_num_photos_counter_label,
-            anchor='w',
-            width=40
-        )
-        if 'input folder' in self.cfg:
-            self.update_num_photo_counter(self.cfg['input folder'])
-        else:
-            self.update_num_photo_counter()
-        self.num_photos_counter_label.pack()
 
         ## Output folder
         frame_output_dir_label = tk.Frame(container)
@@ -306,6 +317,30 @@ class GUI:
         self.video_h_entry.pack()
 
         container.pack(fill="both", expand="yes")
+
+    def init_photo_preview(self, container):
+        frame_photo_preview_container = tk.Frame(container)
+        frame_photo_preview_container.grid(row=0, column=0)
+        self.photo_preview_container = tk.scrolledtext.ScrolledText(
+            frame_photo_preview_container,
+            width=40
+        )
+        self.photo_preview_container.pack(side='left', fill='both')
+        self.photo_preview_container.images = []
+
+        # Num photos counter
+        frame_num_photos_counter_label = tk.Frame(container)
+        frame_num_photos_counter_label.grid(row=1, column=0)
+        self.num_photos_counter_label = tk.Label(
+            frame_num_photos_counter_label,
+            anchor='w',
+            width=30
+        )
+        if 'input folder' in self.cfg:
+            self.update_num_photo_counter(self.cfg['input folder'])
+        else:
+            self.update_num_photo_counter()
+        self.num_photos_counter_label.pack(fill='x', expand='yes')
 
     def __init__(self, logger):
         self.logger = logger
