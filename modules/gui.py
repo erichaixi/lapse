@@ -9,6 +9,8 @@ from tkinter import filedialog, messagebox
 import os
 import glob
 
+FONT_SIZE = 14
+
 class GUI:
     def validate_fields(self):
         res = {}
@@ -164,8 +166,8 @@ class GUI:
         self.root = tk.Tk()
         self.root.title("Time Lapse Creator")
 
-        tk.font.nametofont("TkDefaultFont").configure(size=24)
-        tk.font.nametofont("TkTextFont").configure(size=24)
+        tk.font.nametofont("TkDefaultFont").configure(size=FONT_SIZE)
+        tk.font.nametofont("TkTextFont").configure(size=FONT_SIZE)
 
         # Input/Output folders
         io_selection_frame = tk.LabelFrame(
