@@ -255,12 +255,22 @@ class GUI:
         return P == '' or str.isnumeric(P)
 
     def init_time_lapse_options(self, container):
+        ROWS = [
+            'length',
+            'width',
+            'height'
+        ]
+
         vcmd_is_float = container.register(self.is_float_callback)
         vcmd_is_int = container.register(self.is_float_callback)
 
         # Video duration
         frame_video_length_label = tk.Frame(container)
-        frame_video_length_label.grid(row=0, column=0, sticky='w')
+        frame_video_length_label.grid(
+            row=ROWS.index('length'),
+            column=0,
+            sticky='w'
+        )
         video_length_label = tk.Label(
             frame_video_length_label,
             text="Video Length (sec):",)
@@ -281,7 +291,11 @@ class GUI:
 
         # Dimensions
         frame_video_w_label = tk.Frame(container)
-        frame_video_w_label.grid(row=1, column=0, sticky='w')
+        frame_video_w_label.grid(
+            row=ROWS.index('width'),
+            column=0,
+            sticky='w'
+        )
         video_w_label = tk.Label(
             frame_video_w_label,
             text="Video Width (px):",
@@ -299,7 +313,11 @@ class GUI:
         self.video_w_entry.pack()
 
         frame_video_h_label = tk.Frame(container)
-        frame_video_h_label.grid(row=2, column=0, sticky='w')
+        frame_video_h_label.grid(
+            row=ROWS.index('height'),
+            column=0,
+            sticky='w'
+        )
         video_h_label = tk.Label(
             frame_video_h_label,
             text="Video Height (px):",
