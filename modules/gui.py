@@ -17,7 +17,7 @@ class GUI:
         res = {}
 
         # Check input folder
-        res['input folder'] = self.input_dir_entry.get().strip()
+        res['input folder'] = self.input_dir_entry['text'].strip()
         if not os.path.exists(res['input folder']):
             messagebox.showerror("Error", f'Input folder does not exist: "{res["input folder"]}"')
             return False
@@ -26,7 +26,7 @@ class GUI:
             return False
 
         # Check output folder
-        res['output folder'] = self.output_dir_entry.get().strip()
+        res['output folder'] = self.output_dir_entry['text'].strip()
         if not os.path.exists(res['output folder']):
             messagebox.showerror("Error", f'Output folder does not exist: "{res["output folder"]}"')
             return False

@@ -4,3 +4,4 @@ logs/
 *.cfg
 Design.md
 __pycache__
+test/
