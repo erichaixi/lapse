@@ -3,7 +3,7 @@ from .config import Config
 from .time_lapse_creator import TimeLapseCreator
 from .utils import get_photos_in_folder
 
-from PIL import Image, ImageTk
+from PIL import Image, ImageTk, ImageOps
 import tkinter as tk
 import tkinter.font
 from tkinter import filedialog, messagebox, scrolledtext
@@ -171,7 +171,10 @@ class GUI:
             photo_paths = get_photos_in_folder(folder)
 
             for image_file_path in photo_paths:
-                img = Image.open(image_file_path).resize((64, 64), Image.ANTIALIAS)
+                # img = Image.open(image_file_path).resize((128, 128), Image.ANTIALIAS)
+                img = Image.open(image_file_path)
+                img = ImageOps.fit(img, (128, 128), method = Image.ANTIALIAS,
+                   bleed = 0.0, centering =(0.5, 0.5))
                 img = ImageTk.PhotoImage(img)
 
                 # self.photo_preview_container.insert('insert', image_file_path+'\n')
@@ -341,7 +344,7 @@ class GUI:
         frame_photo_preview_container.grid(row=0, column=0)
         self.photo_preview_container = tk.scrolledtext.ScrolledText(
             frame_photo_preview_container,
-            width=40
+            width=52
         )
         self.photo_preview_container.pack(side='top', fill='both')
         self.photo_preview_container.images = []
