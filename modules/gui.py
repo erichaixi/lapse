@@ -153,16 +153,16 @@ class GUI:
     def update_num_photo_counter(self, folder=None):
         if folder:
             photos = get_photos_in_folder(folder)
-            self.num_photos = len(photos)
+            num_photos = len(photos)
+            self.num_photos_counter_label.config(
+                text=f"{num_photos} images"
+            )
+
             self.update_photo_preview(folder)
         else:
-            self.num_photos = 0
-
-        self.num_photos_counter_label.config(
-            text=f"{self.num_photos} images"
-        )
-
-        # TODO: update FPS
+            self.num_photos_counter_label.config(
+                text=f"0 images"
+            )
 
     def update_photo_preview(self, folder=None):
         self.photo_preview_container.delete(1.0, 'end')
@@ -254,47 +254,15 @@ class GUI:
     def is_int_callback(self, P):
         return P == '' or str.isnumeric(P)
 
-    def video_length_callback(self, P):
-        if not self.is_float_callback(P):
-            return False
-
-        if P == '' or float(P) == 0:
-            return True
-
-        # Adjust FPS to match
-        length = float(P)
-
-        if self.num_photos == 0:
-            fps = 0
-        else:
-            fps = round(self.num_photos / length, 2)
-
-        self.video_fps_entry.delete(0, 'end')
-        self.video_fps_entry.insert(0, fps)
-        print("Set to", fps)
-
-        return True
-
-    def video_fps_callback(self, P):
-        if not self.is_float_callback(P):
-            return False
-
-        # Adjust length to match
-
-        return True
-
     def init_time_lapse_options(self, container):
         ROWS = [
             'length',
-            'fps',
             'width',
             'height'
         ]
 
-        # vcmd_is_float = container.register(self.is_float_callback)
+        vcmd_is_float = container.register(self.is_float_callback)
         vcmd_is_int = container.register(self.is_float_callback)
-        vcmd_length = container.register(self.video_length_callback)
-        vcmd_fps = container.register(self.video_fps_callback)
 
         # Video duration
         frame_video_length_label = tk.Frame(container)
@@ -309,38 +277,17 @@ class GUI:
         video_length_label.pack()
 
         frame_video_length_entry = tk.Frame(container)
-        frame_video_length_entry.grid(row=ROWS.index('length'), column=1)
+        frame_video_length_entry.grid(row=0, column=1)
         self.video_length_entry = tk.Entry(
             frame_video_length_entry,
             width=5,
             validate='key',
-            validatecommand = (vcmd_length, '%P')
+            validatecommand = (vcmd_is_float, '%P')
         )
         self.video_length_entry.pack()
 
 
         # TODO: FPS
-        frame_video_fps_label = tk.Frame(container)
-        frame_video_fps_label.grid(
-            row=ROWS.index('fps'),
-            column=0,
-            stick='w'
-        )
-        video_fps_label = tk.Label(
-            frame_video_fps_label,
-            text="FPS:"
-        )
-        video_fps_label.pack()
-
-        frame_video_fps_entry = tk.Frame(container)
-        frame_video_fps_entry.grid(row=ROWS.index('fps'), column=1)
-        self.video_fps_entry = tk.Entry(
-            frame_video_fps_entry,
-            width=5,
-            validate='key',
-            validatecommand = (vcmd_fps, '%P')
-        )
-        self.video_fps_entry.pack()
 
         # Dimensions
         frame_video_w_label = tk.Frame(container)
@@ -356,7 +303,7 @@ class GUI:
         video_w_label.pack()
 
         frame_video_w_entry = tk.Frame(container)
-        frame_video_w_entry.grid(row=ROWS.index('width'), column=1)
+        frame_video_w_entry.grid(row=1, column=1)
         self.video_w_entry = tk.Entry(
             frame_video_w_entry,
             width=5,
@@ -378,7 +325,7 @@ class GUI:
         video_h_label.pack()
 
         frame_video_h_entry = tk.Frame(container)
-        frame_video_h_entry.grid(row=ROWS.index('height'), column=1)
+        frame_video_h_entry.grid(row=2, column=1)
         self.video_h_entry = tk.Entry(
             frame_video_h_entry,
             width=5,
@@ -447,8 +394,6 @@ class GUI:
         self.button_run.pack()
 
     def __init__(self, logger):
-        self.num_photos = 0
-
         self.logger = logger
         self.cfg_manager = ConfigManager(self.logger)
         self.cfg = self.cfg_manager.load()
