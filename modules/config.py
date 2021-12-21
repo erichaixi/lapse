@@ -5,7 +5,7 @@ class Config:
     slots = {
         'input folder': None,
         'output folder': None,
-        'length': None,
+        'length': 1,
 
         'output file': None,
         'output height': 1080,

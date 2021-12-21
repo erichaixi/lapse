@@ -14,53 +14,51 @@ FONT_SIZE = 14
 
 class GUI:
     def validate_fields(self):
-        res = {}
-
         # Check input folder
-        res['input folder'] = self.input_dir_entry['text'].strip()
-        if not os.path.exists(res['input folder']):
-            messagebox.showerror("Error", f'Input folder does not exist: "{res["input folder"]}"')
+        self.cfg['input folder'] = self.input_dir_entry['text'].strip()
+        if not os.path.exists(self.cfg['input folder']):
+            messagebox.showerror("Error", f'Input folder does not exist: "{self.cfg["input folder"]}"')
             return False
-        elif not glob.glob(res['input folder'] + "/*"):
-            messagebox.showerror("Error", f'Input folder is empty: "{res["input folder"]}"')
+        elif not glob.glob(self.cfg['input folder'] + "/*"):
+            messagebox.showerror("Error", f'Input folder is empty: "{self.cfg["input folder"]}"')
             return False
 
         # Check output folder
-        res['output folder'] = self.output_dir_entry['text'].strip()
-        if not os.path.exists(res['output folder']):
-            messagebox.showerror("Error", f'Output folder does not exist: "{res["output folder"]}"')
+        self.cfg['output folder'] = self.output_dir_entry['text'].strip()
+        if not os.path.exists(self.cfg['output folder']):
+            messagebox.showerror("Error", f'Output folder does not exist: "{self.cfg["output folder"]}"')
             return False
 
         # Check video length
         try:
-            res['length'] = (float)(self.video_length_entry.get().strip())
+            self.cfg['length'] = (float)(self.video_length_entry.get().strip())
         except ValueError:
             messagebox.showerror("Error", f'Video length must be a number: "{self.video_length_entry.get().strip()}"')
             return False
-        if res['length'] <= 0:
-            messagebox.showerror("Error", f'Video length must be a positive number: "{res["length"]}"')
+        if self.cfg['length'] <= 0:
+            messagebox.showerror("Error", f'Video length must be a positive number: "{self.cfg["length"]}"')
             return False
 
         # Check video dimension
         try:
-            res['output width'] = (int)(self.video_w_entry.get().strip())
+            self.cfg['output width'] = (int)(self.video_w_entry.get().strip())
         except ValueError:
-            messagebox.showerror("Error", f'Video width must be an integer: "{self.video_w_entry.get().strip()}"')
+            messagebox.showerror("Error", f'Video width must be a positive number')
             return False
-        if res['output width'] <= 0:
+        if self.cfg['output width'] <= 0:
             messagebox.showerror("Error", f"Video width must be a positive number")
             return False
 
         try:
-            res['output height'] = (int)(self.video_h_entry.get().strip())
+            self.cfg['output height'] = (int)(self.video_h_entry.get().strip())
         except ValueError:
             messagebox.showerror("Error", f'Video height must be an integer: "{self.video_h_entry.get().strip()}"')
             return False
-        if res['output height'] <= 0:
+        if self.cfg['output height'] <= 0:
             messagebox.showerror("Error", f"Video height must be a positive number")
             return False
 
-        return Config(res)
+        return True
 
     def create_time_lapse_message(self, cfg):
         '''
@@ -87,15 +85,18 @@ class GUI:
 
     def click_button_run(self):
         self.logger.debug("Click self.button_run")
-        
-        cfg = self.validate_fields()
-        if not cfg:
+
+        if not self.validate_fields():
             return
 
-        message = self.create_time_lapse_message(cfg)
+        if not self.cfg_manager.save(self.cfg):
+            # display error notification
+            pass
+
+        message = self.create_time_lapse_message(self.cfg)
         rc = messagebox.askyesno("Create Time Lapse", message)
         if rc == tk.YES:
-            lapse = TimeLapseCreator(self.logger, cfg)
+            lapse = TimeLapseCreator(self.logger, self.cfg)
             lapse.run()
             self.logger.debug("Created time lapse")
             messagebox.showinfo("Finished", "Time lapse created.")
@@ -118,10 +119,6 @@ class GUI:
 
             self.logger.debug(f"Set input folder={folder}")
 
-            if not self.cfg_manager.save(self.cfg):
-                # display error notification
-                pass
-
     def clicked_output_dir_button(self):
         self.logger.debug("Click self.output_dir_button")
         
@@ -137,10 +134,6 @@ class GUI:
             self.cfg['output folder'] = folder
 
             self.logger.debug(f"Set output folder={folder}")
-
-            if not self.cfg_manager.save(self.cfg):
-                # display error notification
-                pass
 
     def show_io_notification(self, message):
         self.io_notification_label.config(text=message)
