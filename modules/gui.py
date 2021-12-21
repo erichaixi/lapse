@@ -163,6 +163,10 @@ class GUI:
 
         if folder:
             photo_paths = get_photos_in_folder(folder)
+
+            if not photo_paths:
+                return
+
             if self.selected_sort_method.get() == "Creation Time":
                 photo_paths = sorted(photo_paths, key=os.path.getctime)
             else:
@@ -171,9 +175,8 @@ class GUI:
             for idx, image_file_path in enumerate(photo_paths):
                 img = Image.open(image_file_path)
 
-                if idx == 0 and self.cfg['use_loaded_photo_size']:
-                    width, height = img.size
-                    self.update_video_resolution(width, height)
+                if idx == 0:
+                    video_width, video_height = img.size
 
                 img = ImageOps.fit(img, (128, 128), method = Image.ANTIALIAS,
                    bleed = 0.0, centering =(0.5, 0.5))
@@ -183,6 +186,9 @@ class GUI:
                 self.photo_preview_container.image_create('insert', padx=5, pady=5, image=img)
                 self.photo_preview_container.images.append(img)  # Keep a reference.
                 # self.photo_preview_container.insert('insert', '\n')
+            
+            if self.cfg['use_loaded_photo_size']:
+                self.update_video_resolution(video_width, video_height)
 
     def update_video_resolution(self, width, height):
         self.video_w_entry.delete(0, 'end')
@@ -218,7 +224,12 @@ class GUI:
 
         frame_input_dir_button = tk.Frame(container)
         frame_input_dir_button.grid(row=0, column=2)
-        self.input_dir_button = tk.Button(frame_input_dir_button, text="Browse", command=self.clicked_input_dir_button)
+        self.input_dir_button = tk.Button(
+            frame_input_dir_button,
+            text="Browse",
+            command=self.clicked_input_dir_button,
+            bg='#75FF5A'
+        )
         self.input_dir_button.pack()
 
         ## Output folder
@@ -245,7 +256,12 @@ class GUI:
 
         frame_output_dir_button = tk.Frame(container)
         frame_output_dir_button.grid(row=2, column=2)
-        self.output_dir_button = tk.Button(frame_output_dir_button, text="Browse", command=self.clicked_output_dir_button)
+        self.output_dir_button = tk.Button(
+            frame_output_dir_button,
+            text="Browse",
+            command=self.clicked_output_dir_button,
+            bg='#75FF5A'
+        )
         self.output_dir_button.pack()
 
         # Notification row
@@ -431,7 +447,12 @@ class GUI:
         self.init_time_lapse_options(time_lapse_options_frame)
 
         # Create Time Lapse button
-        self.button_run = tk.Button(left_root_frame, text="Create Time Lapse", command=self.click_button_run)
+        self.button_run = tk.Button(
+            left_root_frame,
+            text="Create Time Lapse",
+            command=self.click_button_run,
+            bg='#75FF5A'
+        )
         self.button_run.pack()
 
         if 'input folder' in self.cfg:
