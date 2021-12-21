@@ -104,6 +104,7 @@ class GUI:
             lapse.run()
             self.logger.debug("Created time lapse")
             messagebox.showinfo("Finished", "Time lapse created.")
+            os.startfile(self.cfg['output folder'])
         else:
             self.logger.debug("User chose not to create time lapse")
 

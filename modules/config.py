@@ -28,7 +28,6 @@ class Config:
         self.d['output file'] = dt_string
 
     def __getitem__(self, key):
-        print(key)
         return self.d[key]
 
     def __setitem__(self, key, val):
