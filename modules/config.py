@@ -10,6 +10,8 @@ class Config:
         'output file': None,
         'output height': 1080,
         'output width': 1920,
+
+        'use_loaded_photo_size': True,
     }
 
     def __init__(self, args=None):

@@ -168,8 +168,13 @@ class GUI:
             else:
                 photo_paths = sorted(photo_paths)
 
-            for image_file_path in photo_paths:
+            for idx, image_file_path in enumerate(photo_paths):
                 img = Image.open(image_file_path)
+
+                if idx == 0 and self.cfg['use_loaded_photo_size']:
+                    width, height = img.size
+                    self.update_video_resolution(width, height)
+
                 img = ImageOps.fit(img, (128, 128), method = Image.ANTIALIAS,
                    bleed = 0.0, centering =(0.5, 0.5))
                 img = ImageTk.PhotoImage(img)
@@ -178,6 +183,15 @@ class GUI:
                 self.photo_preview_container.image_create('insert', padx=5, pady=5, image=img)
                 self.photo_preview_container.images.append(img)  # Keep a reference.
                 # self.photo_preview_container.insert('insert', '\n')
+
+    def update_video_resolution(self, width, height):
+        self.video_w_entry.delete(0, 'end')
+        self.video_w_entry.insert(0, width)
+        self.video_h_entry.delete(0, 'end')
+        self.video_h_entry.insert(0, height)
+
+        self.cfg['output width'] = width
+        self.cfg['output height'] = height
 
     def init_input_output_folders(self, container):
         ## Input folder
@@ -308,7 +322,7 @@ class GUI:
             validate='key',
             validatecommand = (vcmd_is_int, '%P')
         )
-        self.video_w_entry.insert(0, 1920)
+        self.video_w_entry.insert(0, self.cfg['output width'])
         self.video_w_entry.pack()
 
         frame_video_h_label = tk.Frame(container)
@@ -331,7 +345,7 @@ class GUI:
             validate='key',
             validatecommand = (vcmd_is_int, '%P')
         )
-        self.video_h_entry.insert(0, 1080)
+        self.video_h_entry.insert(0, self.cfg['output height'])
         self.video_h_entry.pack()
 
         container.pack(fill="both", expand="yes")
@@ -355,10 +369,7 @@ class GUI:
             width=30
         )
 
-        if 'input folder' in self.cfg:
-            self.update_num_photo_counter(self.cfg['input folder'])
-        else:
-            self.update_num_photo_counter()
+        self.update_num_photo_counter()
         self.num_photos_counter_label.pack(fill='x', expand='yes')
 
         # Sort method
@@ -422,6 +433,9 @@ class GUI:
         # Create Time Lapse button
         self.button_run = tk.Button(left_root_frame, text="Create Time Lapse", command=self.click_button_run)
         self.button_run.pack()
+
+        if 'input folder' in self.cfg:
+            self.update_num_photo_counter(self.cfg['input folder'])
 
     def __init__(self, logger):
         self.logger = logger
