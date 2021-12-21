@@ -6,7 +6,7 @@ from .utils import get_photos_in_folder
 from PIL import Image, ImageTk, ImageOps
 import tkinter as tk
 import tkinter.font
-from tkinter import filedialog, messagebox, scrolledtext
+from tkinter import filedialog, messagebox, scrolledtext, ttk
 import os
 import glob
 
@@ -83,6 +83,10 @@ class GUI:
 
         return message
 
+    def update_progress_bar(self, value):
+        self.progress_bar['value'] = value
+        self.root.update_idletasks()
+
     def click_button_run(self):
         self.logger.debug("Click self.button_run")
 
@@ -96,7 +100,7 @@ class GUI:
         message = self.create_time_lapse_message(self.cfg)
         rc = messagebox.askyesno("Create Time Lapse", message)
         if rc == tk.YES:
-            lapse = TimeLapseCreator(self.logger, self.cfg)
+            lapse = TimeLapseCreator(self.logger, self.cfg, self.update_progress_bar)
             lapse.run()
             self.logger.debug("Created time lapse")
             messagebox.showinfo("Finished", "Time lapse created.")
@@ -425,11 +429,12 @@ class GUI:
         tk.font.nametofont("TkTextFont").configure(size=FONT_SIZE)
 
         left_root_frame = tk.Frame(self.root)
-        # left_root_frame.pack(side='left')
-        left_root_frame.grid(row=0, column=0, sticky='nw')
+        left_root_frame.pack(side='left')
+        # left_root_frame.grid(row=0, column=0, sticky='nw')
         right_root_frame = tk.Frame(self.root)
-        # right_root_frame.pack(side='right')
-        right_root_frame.grid(row=0, column=1)
+        right_root_frame.pack(side='right')
+        # right_root_frame.grid(row=0, column=1)
+
 
         # Create photo preview
         self.init_photo_preview(right_root_frame)
@@ -446,6 +451,19 @@ class GUI:
             text="Time Lapse Options")
         self.init_time_lapse_options(time_lapse_options_frame)
 
+        # Space above create time lapse button
+        dummy_label = tk.Label(left_root_frame, height=6)
+        dummy_label.pack()
+
+        # Progress bar
+        self.progress_bar = ttk.Progressbar(
+            left_root_frame,
+            orient='horizontal',
+            length=100,
+            mode='determinate'
+        )
+        self.progress_bar.pack(fill='x')
+
         # Create Time Lapse button
         self.button_run = tk.Button(
             left_root_frame,
@@ -453,7 +471,7 @@ class GUI:
             command=self.click_button_run,
             bg='#75FF5A'
         )
-        self.button_run.pack()
+        self.button_run.pack(expand='yes', fill='y')
 
         if 'input folder' in self.cfg:
             self.update_num_photo_counter(self.cfg['input folder'])

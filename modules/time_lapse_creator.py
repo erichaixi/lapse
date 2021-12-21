@@ -2,9 +2,10 @@ import cv2
 import glob
 
 class TimeLapseCreator:
-    def __init__(self, logger, config):
+    def __init__(self, logger, config, update_progress_bar):
         self.logger = logger
         self.config = config
+        self.update_progress_bar = update_progress_bar
 
     def get_input_filenames(self):
         input_dir = f'{self.config["input folder"]}/*'
@@ -33,6 +34,7 @@ class TimeLapseCreator:
         return dimensions
 
     def run(self):
+        # TODO: Progress Bar
         input_filenames = self.get_input_filenames()
         output_filename = f"{self.config['output folder']}/{self.config['output file']}.avi"
 
@@ -52,5 +54,8 @@ class TimeLapseCreator:
             img = cv2.imread(filename)
             img = cv2.resize(img, dimensions)
             output_video.write(img)
+
+            progress = (idx + 1) / len(input_filenames) * 100
+            self.update_progress_bar(progress)
 
         output_video.release()
