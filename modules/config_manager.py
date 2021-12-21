@@ -19,21 +19,20 @@ class ConfigManager:
         if os.path.exists(self.path_cfg):
             try:
                 with open(self.path_cfg) as f:
-                    cfg = json.load(f)
-                    self.logger.debug(f"Loaded config: {cfg}")
+                    cfg = Config(json.load(f))
 
                     return cfg
             except Exception as e:
                 self.logger.error(f"Failed to load config: {e}")
-                return ConfigError.LOAD_FAILED
+                return Config()
         else:
             self.logger.debug(f"No existing config")
-            return ConfigError.INVALID_DIR
+            return Config()
 
     def save(self, cfg):
         try:
             with open(self.path_cfg, 'w') as f:
-                json.dump(cfg, f)
+                f.write(cfg.toJson())
             return True
         except Exception as e:
             self.logger.error(f"Failed to save config. Received=[{cfg}]. Error=[{e}]")

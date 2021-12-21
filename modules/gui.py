@@ -361,6 +361,7 @@ class GUI:
             anchor='w',
             width=30
         )
+
         if 'input folder' in self.cfg:
             self.update_num_photo_counter(self.cfg['input folder'])
         else:
