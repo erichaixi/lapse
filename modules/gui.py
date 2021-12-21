@@ -30,13 +30,23 @@ class GUI:
             return False
 
         # Check video length
+        # try:
+        #     self.cfg['length'] = (float)(self.video_length_entry.get().strip())
+        # except ValueError:
+        #     messagebox.showerror("Error", f'Video length must be a number: "{self.video_length_entry.get().strip()}"')
+        #     return False
+        # if self.cfg['length'] <= 0:
+        #     messagebox.showerror("Error", f'Video length must be a positive number: "{self.cfg["length"]}"')
+        #     return False
+
+        # Check video fps
         try:
-            self.cfg['length'] = (float)(self.video_length_entry.get().strip())
+            self.cfg['fps'] = (float)(self.video_fps_entry.get().strip())
         except ValueError:
-            messagebox.showerror("Error", f'Video length must be a number: "{self.video_length_entry.get().strip()}"')
+            messagebox.showerror("Error", f'FPS must be a number: "{self.video_fps_entry.get().strip()}"')
             return False
-        if self.cfg['length'] <= 0:
-            messagebox.showerror("Error", f'Video length must be a positive number: "{self.cfg["length"]}"')
+        if self.cfg['fps'] <= 0:
+            messagebox.showerror("Error", f'FPS must be a positive number: "{self.cfg["fps"]}"')
             return False
 
         # Check video dimension
@@ -74,10 +84,13 @@ class GUI:
         num_photos = len(glob.glob(cfg['input folder'] + "/*"))
         message += f"# Photos: {num_photos}\n"
 
-        message += f"Video Length (sec): {cfg['length']}\n"
+        # message += f"Video Length (sec): {cfg['length']}\n"
 
-        fps = round(num_photos / cfg['length'], 2)
-        message += f"FPS: {fps}\n"
+        # fps = round(num_photos / cfg['length'], 2)
+        # message += f"FPS: {fps}\n"
+
+        message += f"Video Length (sec): {round(num_photos / self.cfg['fps'], 2)}\n"
+        message += f"FPS: {self.cfg['fps']}\n"
 
         message += f"Resolution: {cfg['output width']} x {cfg['output height']}"
 
@@ -293,6 +306,7 @@ class GUI:
     def init_time_lapse_options(self, container):
         ROWS = [
             'length',
+            'fps',
             'width',
             'height'
         ]
@@ -313,14 +327,38 @@ class GUI:
         video_length_label.pack()
 
         frame_video_length_entry = tk.Frame(container)
-        frame_video_length_entry.grid(row=0, column=1)
+        frame_video_length_entry.grid(row=ROWS.index('length'), column=1)
         self.video_length_entry = tk.Entry(
             frame_video_length_entry,
             width=5,
             validate='key',
             validatecommand = (vcmd_is_float, '%P')
         )
-        self.video_length_entry.pack()
+        # self.video_length_entry.pack()
+
+        # FPS
+        frame_video_fps_label = tk.Frame(container)
+        frame_video_fps_label.grid(
+            row=ROWS.index('fps'),
+            column=0,
+            sticky='w'
+        )
+        video_fps_label = tk.Label(
+            frame_video_fps_label,
+            text="FPS:"
+        )
+        video_fps_label.pack()
+
+        frame_video_fps_entry = tk.Frame(container)
+        frame_video_fps_entry.grid(row=ROWS.index('fps'), column=1)
+        self.video_fps_entry = tk.Entry(
+            frame_video_fps_entry,
+            width=5,
+            validate='key',
+            validatecommand = (vcmd_is_float, '%P')
+        )
+        self.video_fps_entry.insert(0, self.cfg['fps'])
+        self.video_fps_entry.pack()
 
         # Dimensions
         frame_video_w_label = tk.Frame(container)
@@ -336,7 +374,7 @@ class GUI:
         video_w_label.pack()
 
         frame_video_w_entry = tk.Frame(container)
-        frame_video_w_entry.grid(row=1, column=1)
+        frame_video_w_entry.grid(row=ROWS.index('width'), column=1)
         self.video_w_entry = tk.Entry(
             frame_video_w_entry,
             width=5,
@@ -359,7 +397,7 @@ class GUI:
         video_h_label.pack()
 
         frame_video_h_entry = tk.Frame(container)
-        frame_video_h_entry.grid(row=2, column=1)
+        frame_video_h_entry.grid(row=ROWS.index('height'), column=1)
         self.video_h_entry = tk.Entry(
             frame_video_h_entry,
             width=5,

@@ -6,6 +6,7 @@ class Config:
         'input folder': None,
         'output folder': None,
         'length': 1,
+        'fps': 10,
 
         'output file': None,
         'output height': 1080,
