@@ -1,5 +1,5 @@
-from modules.gui import GUI
-from modules.logger import Logger
+from src.gui import GUI
+from src.logger import Logger
 
 import sys
 
