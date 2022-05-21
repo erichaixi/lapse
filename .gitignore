@@ -6,5 +6,4 @@ Design.md
 __pycache__
 test/
 build/
-dist/
 *.spec
