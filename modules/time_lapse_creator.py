@@ -36,7 +36,7 @@ class TimeLapseCreator:
     def run(self):
         # TODO: Progress Bar
         input_filenames = self.get_input_filenames()
-        output_filename = f"{self.cfg['output folder']}/{self.cfg['output file']}.avi"
+        output_filename = f"{self.cfg['output folder']}/{self.cfg['output file']}.mp4"
 
         # skip_interval = self.cfg['length'] / (len(input_filenames) - 1)
         # fps = 1.0 / skip_interval
@@ -45,7 +45,7 @@ class TimeLapseCreator:
         dimensions = self.get_dimensions(input_filenames[0])
 
         output_video = cv2.VideoWriter(output_filename, 
-                                       cv2.VideoWriter_fourcc(*'DIVX'),
+                                       cv2.VideoWriter_fourcc(*'MP4V'),
                                        self.cfg['fps'],
                                        dimensions)
 
