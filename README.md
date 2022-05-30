@@ -4,6 +4,7 @@ My dad loves to take photos and make time-lapses. However all the free time-laps
 # How to use
 # Option 1 - Download Executable
 - Download latest stand-alone executable for Windows 10 from [here](dist/TimeLapse.exe)
+![](images/download.png)
 - Run the executable
 
 # Option 2 - Run via Python
