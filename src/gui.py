@@ -76,6 +76,7 @@ class GUI:
         Video Length (sec):
         FPS:
         Resolution:
+        Format:
         '''
         self.logger.debug(f"Create time lapse message using: {cfg}")
 
@@ -92,7 +93,9 @@ class GUI:
         message += f"Video Length (sec): {round(num_photos / self.cfg['fps'], 2)}\n"
         message += f"FPS: {self.cfg['fps']}\n"
 
-        message += f"Resolution: {cfg['output width']} x {cfg['output height']}"
+        message += f"Resolution: {cfg['output width']} x {cfg['output height']}\n"
+
+        message += f"Format: {cfg['output format']}"
 
         return message
 
@@ -112,14 +115,19 @@ class GUI:
 
         message = self.create_time_lapse_message(self.cfg)
         rc = messagebox.askyesno("Create Time Lapse", message)
-        if rc == tk.YES:
-            lapse = TimeLapseCreator(self.logger, self.cfg, self.update_progress_bar)
-            lapse.run()
-            self.logger.debug("Created time lapse")
-            messagebox.showinfo("Finished", "Time lapse created.")
-            os.startfile(self.cfg['output folder'])
-        else:
+        if rc != tk.YES:
             self.logger.debug("User chose not to create time lapse")
+
+        lapse = TimeLapseCreator(self.logger, self.cfg, self.update_progress_bar)
+        succeeded = lapse.run()
+
+        if not succeeded:
+            messagebox.showinfo("Error", "Failed to create time lapse.")
+            return
+
+        self.logger.debug("Created time lapse")
+        messagebox.showinfo("Finished", "Time lapse created.")
+        os.startfile(self.cfg['output folder'])
 
     def clicked_input_dir_button(self):
         self.logger.debug("Click self.input_dir_button")
@@ -308,7 +316,8 @@ class GUI:
             'length',
             'fps',
             'width',
-            'height'
+            'height',
+            'format'
         ]
 
         vcmd_is_float = container.register(self.is_float_callback)
@@ -334,7 +343,6 @@ class GUI:
             validate='key',
             validatecommand = (vcmd_is_float, '%P')
         )
-        # self.video_length_entry.pack()
 
         # FPS
         frame_video_fps_label = tk.Frame(container)
@@ -353,7 +361,7 @@ class GUI:
         frame_video_fps_entry.grid(row=ROWS.index('fps'), column=1)
         self.video_fps_entry = tk.Entry(
             frame_video_fps_entry,
-            width=5,
+            width=6,
             validate='key',
             validatecommand = (vcmd_is_float, '%P')
         )
@@ -377,7 +385,7 @@ class GUI:
         frame_video_w_entry.grid(row=ROWS.index('width'), column=1)
         self.video_w_entry = tk.Entry(
             frame_video_w_entry,
-            width=5,
+            width=6,
             validate='key',
             validatecommand = (vcmd_is_int, '%P')
         )
@@ -400,13 +408,39 @@ class GUI:
         frame_video_h_entry.grid(row=ROWS.index('height'), column=1)
         self.video_h_entry = tk.Entry(
             frame_video_h_entry,
-            width=5,
+            width=6,
             validate='key',
             validatecommand = (vcmd_is_int, '%P')
         )
         self.video_h_entry.insert(0, self.cfg['output height'])
         self.video_h_entry.pack()
 
+        # Video Format
+        VIDEO_FORMAT_TYPES = [
+            "avi",
+            "mp4"
+        ]
+
+        self.selected_video_format_type = tk.StringVar()
+        self.selected_video_format_type.set(self.cfg["output format"])
+
+        frame_video_format_label = tk.Frame(container)
+        frame_video_format_label.grid(row=ROWS.index('format'), column=0, sticky='w')
+        video_format_label = tk.Label(frame_video_format_label, text="Video Format:")
+        video_format_label.pack()
+
+        frame_video_format_dropdown = tk.Frame(container)
+        frame_video_format_dropdown.grid(row=ROWS.index('format'), column=1)
+        self.video_format = tk.OptionMenu(
+            frame_video_format_dropdown,
+            self.selected_video_format_type,
+            *VIDEO_FORMAT_TYPES,
+            command=self.video_format_type_changed
+        )
+        self.video_format.config(width=4)
+        self.video_format.pack()
+
+        # Finish
         container.pack(fill="both", expand="yes")
 
     def init_photo_preview(self, container):
@@ -456,6 +490,10 @@ class GUI:
     def sort_method_changed(self, choice):
         if 'input folder' in self.cfg:
             self.update_photo_preview(self.cfg['input folder'])
+
+    def video_format_type_changed(self, choice):
+        self.logger.debug(f"Video format type changed to={choice}")
+        self.cfg["output format"] = choice
 
     def init_grid(self):
         self.root = tk.Tk()

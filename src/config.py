@@ -11,6 +11,7 @@ class Config:
         'output file': None,
         'output height': 1080,
         'output width': 1920,
+        'output format': "avi",
 
         'use_loaded_photo_size': True,
     }

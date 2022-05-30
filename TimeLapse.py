@@ -4,9 +4,9 @@ from src.logger import Logger
 import sys
 
 if __name__ == "__main__":
-    debug = False
-    if "-d" in sys.argv:
-        debug = True
+    debug = True
+    if "-l" in sys.argv:
+        debug = False
     
     logger = Logger(debug)
     gui = GUI(logger)

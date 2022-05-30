@@ -1,3 +1,5 @@
+from .utils import video_format_to_codec
+
 import cv2
 import glob
 
@@ -35,19 +37,28 @@ class TimeLapseCreator:
 
     def run(self):
         # TODO: Progress Bar
-        input_filenames = self.get_input_filenames()
-        output_filename = f"{self.cfg['output folder']}/{self.cfg['output file']}.mp4"
+        video_format = self.cfg["output format"]
+        video_codec = video_format_to_codec(video_format)
 
-        # skip_interval = self.cfg['length'] / (len(input_filenames) - 1)
-        # fps = 1.0 / skip_interval
-        # self.logger.debug(f"Skip interval: {skip_interval}. Fps: {fps}")
+        input_filenames = self.get_input_filenames()
+        output_filename = f"{self.cfg['output folder']}/{self.cfg['output file']}.{video_format}"
 
         dimensions = self.get_dimensions(input_filenames[0])
 
+        self.logger.debug(f"Creating video writer, "\
+                          f"output path={output_filename}, "\
+                          f"codec={video_codec}, "\
+                          f"fps={self.cfg['fps']}, "\
+                          f"dimensions={dimensions}")
+
         output_video = cv2.VideoWriter(output_filename, 
-                                       cv2.VideoWriter_fourcc(*'MP4V'),
+                                       cv2.VideoWriter_fourcc(*'DIVX'),
                                        self.cfg['fps'],
                                        dimensions)
+
+        if not output_video.isOpened():
+            print("Failed to open video writer")
+            return False
 
         for idx, filename in enumerate(input_filenames):
             self.logger.debug(f"{idx+1} / {len(input_filenames)}")
@@ -59,3 +70,4 @@ class TimeLapseCreator:
             self.update_progress_bar(progress)
 
         output_video.release()
+        return True
