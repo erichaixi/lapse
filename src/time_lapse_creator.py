@@ -1,4 +1,4 @@
-from .utils import video_format_to_codec
+from .utils import video_format_to_codec, video_format_to_extension
 
 import cv2
 import glob
@@ -39,9 +39,10 @@ class TimeLapseCreator:
         # TODO: Progress Bar
         video_format = self.cfg["output format"]
         video_codec = video_format_to_codec(video_format)
+        video_extension = video_format_to_extension(video_format)
 
         input_filenames = self.get_input_filenames()
-        output_filename = f"{self.cfg['output folder']}/{self.cfg['output file']}.{video_format}"
+        output_filename = f"{self.cfg['output folder']}/{self.cfg['output file']}.{video_extension}"
 
         dimensions = self.get_dimensions(input_filenames[0])
 
@@ -51,8 +52,11 @@ class TimeLapseCreator:
                           f"fps={self.cfg['fps']}, "\
                           f"dimensions={dimensions}")
 
+        self.logger.debug(f"Writing to {output_filename}, codec={video_codec}")
+
+        video_fourcc = 0 if video_codec == 0 else cv2.VideoWriter_fourcc(*video_codec)
         output_video = cv2.VideoWriter(output_filename, 
-                                       cv2.VideoWriter_fourcc(*'DIVX'),
+                                       video_fourcc,
                                        self.cfg['fps'],
                                        dimensions)
 

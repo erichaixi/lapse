@@ -358,10 +358,10 @@ class GUI:
         video_fps_label.pack()
 
         frame_video_fps_entry = tk.Frame(container)
-        frame_video_fps_entry.grid(row=ROWS.index('fps'), column=1)
+        frame_video_fps_entry.grid(row=ROWS.index('fps'), column=1, stick="w")
         self.video_fps_entry = tk.Entry(
             frame_video_fps_entry,
-            width=6,
+            width=5,
             validate='key',
             validatecommand = (vcmd_is_float, '%P')
         )
@@ -382,10 +382,10 @@ class GUI:
         video_w_label.pack()
 
         frame_video_w_entry = tk.Frame(container)
-        frame_video_w_entry.grid(row=ROWS.index('width'), column=1)
+        frame_video_w_entry.grid(row=ROWS.index('width'), column=1, stick="w")
         self.video_w_entry = tk.Entry(
             frame_video_w_entry,
-            width=6,
+            width=5,
             validate='key',
             validatecommand = (vcmd_is_int, '%P')
         )
@@ -405,10 +405,10 @@ class GUI:
         video_h_label.pack()
 
         frame_video_h_entry = tk.Frame(container)
-        frame_video_h_entry.grid(row=ROWS.index('height'), column=1)
+        frame_video_h_entry.grid(row=ROWS.index('height'), column=1, stick="w")
         self.video_h_entry = tk.Entry(
             frame_video_h_entry,
-            width=6,
+            width=5,
             validate='key',
             validatecommand = (vcmd_is_int, '%P')
         )
@@ -418,7 +418,8 @@ class GUI:
         # Video Format
         VIDEO_FORMAT_TYPES = [
             "avi",
-            "mp4"
+            "mp4",
+            "avi(raw)"
         ]
 
         self.selected_video_format_type = tk.StringVar()
@@ -437,7 +438,7 @@ class GUI:
             *VIDEO_FORMAT_TYPES,
             command=self.video_format_type_changed
         )
-        self.video_format.config(width=4)
+        self.video_format.config()
         self.video_format.pack()
 
         # Finish
