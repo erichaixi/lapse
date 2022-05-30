@@ -449,6 +449,7 @@ class GUI:
         )
         self.photo_preview_container.pack(side='top', fill='both')
         self.photo_preview_container.images = []
+        self.photo_preview_container.configure(state="disabled")
 
         # Num photos counter
         frame_num_photos_counter_label = ttk.Frame(container)
