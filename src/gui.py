@@ -7,6 +7,7 @@ from PIL import Image, ImageTk, ImageOps
 import tkinter as tk
 import tkinter.font
 from tkinter import filedialog, messagebox, scrolledtext, ttk
+from ttkthemes import ThemedTk
 import os
 import glob
 
@@ -224,18 +225,18 @@ class GUI:
 
     def init_input_output_folders(self, container):
         ## Input folder
-        frame_input_dir_label = tk.Frame(container)
+        frame_input_dir_label = ttk.Frame(container)
         frame_input_dir_label.grid(row=0, column=0)
-        input_dir_label = tk.Label(
+        input_dir_label = ttk.Label(
             frame_input_dir_label,
             text="Input Folder:",
             anchor='w',
             width=13)
         input_dir_label.pack()
 
-        frame_input_dir_entry = tk.Frame(container)
+        frame_input_dir_entry = ttk.Frame(container)
         frame_input_dir_entry.grid(row=0, column=1)
-        self.input_dir_entry = tk.Label(
+        self.input_dir_entry = ttk.Label(
             frame_input_dir_entry,
             width=40,
             anchor='e',
@@ -245,29 +246,28 @@ class GUI:
             self.input_dir_entry.config(text=self.cfg['input folder'])
         self.input_dir_entry.pack()
 
-        frame_input_dir_button = tk.Frame(container)
+        frame_input_dir_button = ttk.Frame(container)
         frame_input_dir_button.grid(row=0, column=2)
-        self.input_dir_button = tk.Button(
+        self.input_dir_button = ttk.Button(
             frame_input_dir_button,
             text="Browse",
-            command=self.clicked_input_dir_button,
-            bg='#75FF5A'
+            command=self.clicked_input_dir_button
         )
         self.input_dir_button.pack()
 
         ## Output folder
-        frame_output_dir_label = tk.Frame(container)
+        frame_output_dir_label = ttk.Frame(container)
         frame_output_dir_label.grid(row=2, column=0)
-        output_dir_label = tk.Label(
+        output_dir_label = ttk.Label(
             frame_output_dir_label,
             text="Output Folder:",
             anchor='w',
             width=13)
         output_dir_label.pack()
 
-        frame_output_dir_entry = tk.Frame(container)
+        frame_output_dir_entry = ttk.Frame(container)
         frame_output_dir_entry.grid(row=2, column=1)
-        self.output_dir_entry = tk.Label(
+        self.output_dir_entry = ttk.Label(
             frame_output_dir_entry,
             width=40,
             anchor='e',
@@ -277,20 +277,19 @@ class GUI:
             self.output_dir_entry.config(text=self.cfg['output folder'])
         self.output_dir_entry.pack()
 
-        frame_output_dir_button = tk.Frame(container)
+        frame_output_dir_button = ttk.Frame(container)
         frame_output_dir_button.grid(row=2, column=2)
-        self.output_dir_button = tk.Button(
+        self.output_dir_button = ttk.Button(
             frame_output_dir_button,
             text="Browse",
-            command=self.clicked_output_dir_button,
-            bg='#75FF5A'
+            command=self.clicked_output_dir_button
         )
         self.output_dir_button.pack()
 
         # Notification row
-        frame_io_notification_label = tk.Frame(container)
+        frame_io_notification_label = ttk.Frame(container)
         frame_io_notification_label.grid(row=3, column=1)
-        self.io_notification_label = tk.Label(frame_io_notification_label, anchor='w')
+        self.io_notification_label = ttk.Label(frame_io_notification_label, anchor='w')
 
         container.pack()
 
@@ -321,20 +320,20 @@ class GUI:
         vcmd_is_int = container.register(self.is_int_callback)
 
         # Video duration
-        frame_video_length_label = tk.Frame(container)
+        frame_video_length_label = ttk.Frame(container)
         frame_video_length_label.grid(
             row=ROWS.index('length'),
             column=0,
             sticky='w'
         )
-        video_length_label = tk.Label(
+        video_length_label = ttk.Label(
             frame_video_length_label,
             text="Video Length (sec):",)
         video_length_label.pack()
 
-        frame_video_length_entry = tk.Frame(container)
+        frame_video_length_entry = ttk.Frame(container)
         frame_video_length_entry.grid(row=ROWS.index('length'), column=1)
-        self.video_length_entry = tk.Entry(
+        self.video_length_entry = ttk.Entry(
             frame_video_length_entry,
             width=5,
             validate='key',
@@ -342,21 +341,21 @@ class GUI:
         )
 
         # FPS
-        frame_video_fps_label = tk.Frame(container)
+        frame_video_fps_label = ttk.Frame(container)
         frame_video_fps_label.grid(
             row=ROWS.index('fps'),
             column=0,
             sticky='w'
         )
-        video_fps_label = tk.Label(
+        video_fps_label = ttk.Label(
             frame_video_fps_label,
             text="FPS:"
         )
         video_fps_label.pack()
 
-        frame_video_fps_entry = tk.Frame(container)
+        frame_video_fps_entry = ttk.Frame(container)
         frame_video_fps_entry.grid(row=ROWS.index('fps'), column=1, stick="w")
-        self.video_fps_entry = tk.Entry(
+        self.video_fps_entry = ttk.Entry(
             frame_video_fps_entry,
             width=5,
             validate='key',
@@ -366,21 +365,21 @@ class GUI:
         self.video_fps_entry.pack()
 
         # Dimensions
-        frame_video_w_label = tk.Frame(container)
+        frame_video_w_label = ttk.Frame(container)
         frame_video_w_label.grid(
             row=ROWS.index('width'),
             column=0,
             sticky='w'
         )
-        video_w_label = tk.Label(
+        video_w_label = ttk.Label(
             frame_video_w_label,
             text="Video Width (px):",
         )
         video_w_label.pack()
 
-        frame_video_w_entry = tk.Frame(container)
+        frame_video_w_entry = ttk.Frame(container)
         frame_video_w_entry.grid(row=ROWS.index('width'), column=1, stick="w")
-        self.video_w_entry = tk.Entry(
+        self.video_w_entry = ttk.Entry(
             frame_video_w_entry,
             width=5,
             validate='key',
@@ -389,21 +388,21 @@ class GUI:
         self.video_w_entry.insert(0, self.cfg['output width'])
         self.video_w_entry.pack()
 
-        frame_video_h_label = tk.Frame(container)
+        frame_video_h_label = ttk.Frame(container)
         frame_video_h_label.grid(
             row=ROWS.index('height'),
             column=0,
             sticky='w'
         )
-        video_h_label = tk.Label(
+        video_h_label = ttk.Label(
             frame_video_h_label,
             text="Video Height (px):",
         )
         video_h_label.pack()
 
-        frame_video_h_entry = tk.Frame(container)
+        frame_video_h_entry = ttk.Frame(container)
         frame_video_h_entry.grid(row=ROWS.index('height'), column=1, stick="w")
-        self.video_h_entry = tk.Entry(
+        self.video_h_entry = ttk.Entry(
             frame_video_h_entry,
             width=5,
             validate='key',
@@ -422,14 +421,14 @@ class GUI:
         self.selected_video_format_type = tk.StringVar()
         self.selected_video_format_type.set(self.cfg["output format"])
 
-        frame_video_format_label = tk.Frame(container)
+        frame_video_format_label = ttk.Frame(container)
         frame_video_format_label.grid(row=ROWS.index('format'), column=0, sticky='w')
-        video_format_label = tk.Label(frame_video_format_label, text="Video Format:")
+        video_format_label = ttk.Label(frame_video_format_label, text="Video Format:")
         video_format_label.pack()
 
-        frame_video_format_dropdown = tk.Frame(container)
+        frame_video_format_dropdown = ttk.Frame(container)
         frame_video_format_dropdown.grid(row=ROWS.index('format'), column=1)
-        self.video_format = tk.OptionMenu(
+        self.video_format = ttk.OptionMenu(
             frame_video_format_dropdown,
             self.selected_video_format_type,
             *VIDEO_FORMAT_TYPES,
@@ -452,9 +451,9 @@ class GUI:
         self.photo_preview_container.images = []
 
         # Num photos counter
-        frame_num_photos_counter_label = tk.Frame(container)
+        frame_num_photos_counter_label = ttk.Frame(container)
         frame_num_photos_counter_label.grid(row=1, column=0, sticky='w')
-        self.num_photos_counter_label = tk.Label(
+        self.num_photos_counter_label = ttk.Label(
             frame_num_photos_counter_label,
             anchor='w',
             width=30
@@ -469,9 +468,9 @@ class GUI:
             "Creation Time"
         ]
 
-        frame_sort_method_dropdown = tk.Frame(container)
+        frame_sort_method_dropdown = ttk.Frame(container)
         frame_sort_method_dropdown.grid(row=2, column=0, sticky='w')
-        self.sort_method_dropdown = tk.OptionMenu(
+        self.sort_method_dropdown = ttk.OptionMenu(
             frame_sort_method_dropdown,
             self.selected_sort_method,
             *SORT_METHODS,
@@ -479,7 +478,7 @@ class GUI:
         )
         self.sort_method_dropdown.pack(side='right')
 
-        label_sort_method_dropdown = tk.Label(
+        label_sort_method_dropdown = ttk.Label(
             frame_sort_method_dropdown,
             text="Sort by:"
         )
@@ -494,7 +493,7 @@ class GUI:
         self.cfg["output format"] = choice
 
     def init_grid(self):
-        self.root = tk.Tk()
+        self.root = ThemedTk(theme="plastik")
         self.root.title("Time Lapse Creator")
 
         self.selected_sort_method = tk.StringVar()
@@ -503,31 +502,29 @@ class GUI:
         tk.font.nametofont("TkDefaultFont").configure(size=FONT_SIZE)
         tk.font.nametofont("TkTextFont").configure(size=FONT_SIZE)
 
-        left_root_frame = tk.Frame(self.root)
+        left_root_frame = ttk.Frame(self.root)
         left_root_frame.pack(side='left')
-        # left_root_frame.grid(row=0, column=0, sticky='nw')
-        right_root_frame = tk.Frame(self.root)
-        right_root_frame.pack(side='right')
-        # right_root_frame.grid(row=0, column=1)
 
+        right_root_frame = ttk.Frame(self.root)
+        right_root_frame.pack(side='right')
 
         # Create photo preview
         self.init_photo_preview(right_root_frame)
 
         # Input/Output folders
-        io_selection_frame = tk.LabelFrame(
+        io_selection_frame = ttk.LabelFrame(
             left_root_frame,
             text="Input/Output Selection")
         self.init_input_output_folders(io_selection_frame)
 
         # Time Lapse options
-        time_lapse_options_frame = tk.LabelFrame(
+        time_lapse_options_frame = ttk.LabelFrame(
             left_root_frame,
             text="Time Lapse Options")
         self.init_time_lapse_options(time_lapse_options_frame)
 
         # Space above create time lapse button
-        dummy_label = tk.Label(left_root_frame, height=6)
+        dummy_label = ttk.Label(left_root_frame)
         dummy_label.pack()
 
         # Progress bar
@@ -540,11 +537,10 @@ class GUI:
         self.progress_bar.pack(fill='x')
 
         # Create Time Lapse button
-        self.button_run = tk.Button(
+        self.button_run = ttk.Button(
             left_root_frame,
             text="Create Time Lapse",
-            command=self.click_button_run,
-            bg='#75FF5A'
+            command=self.click_button_run
         )
         self.button_run.pack(expand='yes', fill='y')
 
