@@ -29,16 +29,6 @@ class GUI:
             messagebox.showerror("Error", f'Output folder does not exist: "{self.cfg["output folder"]}"')
             return False
 
-        # Check video length
-        # try:
-        #     self.cfg['length'] = (float)(self.video_length_entry.get().strip())
-        # except ValueError:
-        #     messagebox.showerror("Error", f'Video length must be a number: "{self.video_length_entry.get().strip()}"')
-        #     return False
-        # if self.cfg['length'] <= 0:
-        #     messagebox.showerror("Error", f'Video length must be a positive number: "{self.cfg["length"]}"')
-        #     return False
-
         # Check video fps
         try:
             self.cfg['fps'] = (float)(self.video_fps_entry.get().strip())
@@ -66,6 +56,12 @@ class GUI:
             return False
         if self.cfg['output height'] <= 0:
             messagebox.showerror("Error", f"Video height must be a positive number")
+            return False
+
+        # Check HD / video format compatability
+        if (self.cfg['output width'] > 4096 or self.cfg['output height'] > 4096) and\
+                self.cfg['output format'] != 'avi(raw)':
+            messagebox.showerror("Error", f"Output format only supports up to 4K videos. Please switch to 'avi(raw)' format for higher resolution videos.")
             return False
 
         return True
@@ -117,6 +113,7 @@ class GUI:
         rc = messagebox.askyesno("Create Time Lapse", message)
         if rc != tk.YES:
             self.logger.debug("User chose not to create time lapse")
+            return
 
         lapse = TimeLapseCreator(self.logger, self.cfg, self.update_progress_bar)
         succeeded = lapse.run()
