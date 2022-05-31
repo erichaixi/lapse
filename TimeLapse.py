@@ -15,7 +15,7 @@ def init_logger():
 
     stdout_handler = logging.StreamHandler(sys.stdout)
     stdout_handler.setFormatter(formatter)
-    stdout_handler.setLevel(logging.WARNING)
+    stdout_handler.setLevel(logging.INFO)
     if (debug):
         stdout_handler.setLevel(logging.DEBUG)
     logger.addHandler(stdout_handler)
