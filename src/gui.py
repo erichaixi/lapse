@@ -182,7 +182,7 @@ class GUI:
             )
 
     def update_photo_preview(self, folder=None):
-        self.photo_preview_container.delete(1.0, 'end')
+        self.photo_preview_container.delete(1.0, tk.END)
         self.photo_preview_container.images.clear()
 
         if folder:
@@ -206,11 +206,9 @@ class GUI:
                    bleed = 0.0, centering =(0.5, 0.5))
                 img = ImageTk.PhotoImage(img)
 
-                # self.photo_preview_container.insert('insert', image_file_path+'\n')
-                self.photo_preview_container.image_create('insert', padx=5, pady=5, image=img)
+                self.photo_preview_container.image_create(1.0, padx=5, pady=5, image=img)
                 self.photo_preview_container.images.append(img)  # Keep a reference.
-                # self.photo_preview_container.insert('insert', '\n')
-            
+
             if self.cfg['use_loaded_photo_size']:
                 self.update_video_resolution(video_width, video_height)
 
