@@ -431,6 +431,7 @@ class GUI:
         self.video_format = ttk.OptionMenu(
             frame_video_format_dropdown,
             self.selected_video_format_type,
+            self.selected_video_format_type.get(),
             *VIDEO_FORMAT_TYPES,
             command=self.video_format_type_changed
         )
@@ -474,6 +475,7 @@ class GUI:
         self.sort_method_dropdown = ttk.OptionMenu(
             frame_sort_method_dropdown,
             self.selected_sort_method,
+            self.selected_sort_method.get(),
             *SORT_METHODS,
             command=self.sort_method_changed
         )
