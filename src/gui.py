@@ -182,8 +182,17 @@ class GUI:
             )
 
     def update_photo_preview(self, folder=None):
-        self.photo_preview_container.delete(1.0, tk.END)
-        self.photo_preview_container.images.clear()
+        if self.photo_preview_container:
+            self.photo_preview_container.pack_forget()
+            self.photo_preview_container.destroy()
+
+        self.photo_preview_container = tk.scrolledtext.ScrolledText(
+            self.frame_photo_preview_container,
+            width=52
+        )
+        self.photo_preview_container.pack(side='top', fill='both')
+        self.photo_preview_container.images = []
+        self.photo_preview_container.configure(state="disabled")
 
         if folder:
             photo_paths = get_photos_in_folder(folder)
@@ -206,7 +215,7 @@ class GUI:
                    bleed = 0.0, centering =(0.5, 0.5))
                 img = ImageTk.PhotoImage(img)
 
-                self.photo_preview_container.image_create(1.0, padx=5, pady=5, image=img)
+                self.photo_preview_container.image_create(tk.END, padx=5, pady=5, image=img)
                 self.photo_preview_container.images.append(img)  # Keep a reference.
 
             if self.cfg['use_loaded_photo_size']:
@@ -440,15 +449,10 @@ class GUI:
         container.pack(fill="both", expand="yes")
 
     def init_photo_preview(self, container):
-        frame_photo_preview_container = tk.Frame(container)
-        frame_photo_preview_container.grid(row=0, column=0)
-        self.photo_preview_container = tk.scrolledtext.ScrolledText(
-            frame_photo_preview_container,
-            width=52
-        )
-        self.photo_preview_container.pack(side='top', fill='both')
-        self.photo_preview_container.images = []
-        self.photo_preview_container.configure(state="disabled")
+        self.frame_photo_preview_container = tk.Frame(container)
+        self.frame_photo_preview_container.grid(row=0, column=0)
+
+        self.photo_preview_container = None
 
         # Num photos counter
         frame_num_photos_counter_label = ttk.Frame(container)
