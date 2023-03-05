@@ -2,6 +2,7 @@ from .utils import video_format_to_codec, video_format_to_extension
 
 import cv2
 import glob
+import imghdr
 
 class TimeLapseCreator:
     def __init__(self, logger, cfg, update_progress_bar):
@@ -17,8 +18,12 @@ class TimeLapseCreator:
         
         return filenames
 
+    def filter_for_image_types(self, filenames):
+        return [filename for filename in filenames if imghdr.what(filename)]
+
     def get_dimensions(self, filename):
         img = cv2.imread(filename)
+
         height, width, layers = img.shape
 
         x_factor = width / self.cfg['output width']
@@ -42,6 +47,7 @@ class TimeLapseCreator:
         video_extension = video_format_to_extension(video_format)
 
         input_filenames = self.get_input_filenames()
+        input_filenames = self.filter_for_image_types(input_filenames)
         output_filename = f"{self.cfg['output folder']}/{self.cfg['output file']}.{video_extension}"
 
         dimensions = self.get_dimensions(input_filenames[0])
